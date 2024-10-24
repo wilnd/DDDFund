@@ -1,0 +1,2 @@
+com.finpoints.bss.common.config.LockProviderConfig
+com.finpoints.bss.common.domain.model.DomainEventPublisher
