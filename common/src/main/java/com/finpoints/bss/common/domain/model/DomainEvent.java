@@ -1,7 +1,5 @@
 package com.finpoints.bss.common.domain.model;
 
-import lombok.Getter;
-
 import java.io.Serializable;
 import java.time.LocalDateTime;
 

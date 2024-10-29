@@ -54,7 +54,34 @@ springdoc:
   show-actuator: false
   writer-with-order-by-keys: true
   group-configs:
-    - group: public
-      display-name: 'Public'
+    - group: client
+      display-name: 'Client API'
       packages-to-scan:
-        - com.finpoints.bss.fund.port.adapter.restapi
+        - com.finpoints.bss.fund.port.adapter.restapi.client
+    - group: admin
+      display-name: 'Admin API'
+      packages-to-scan:
+        - com.finpoints.bss.fund.port.adapter.restapi.admin
+
+# RocketMQ config
+rocketmq:
+  name-server: 10.1.14.71:9876;10.1.14.72:9876
+  login:
+    name: finpoints
+    passwd: AASNsaij92km120121
+  consumer:
+    access-key: ${rocketmq.login.name}
+    secret-key: ${rocketmq.login.passwd}
+    enable-msg-trace: true
+    group: crm-ddd-fund
+  producer:
+    access-key: ${rocketmq.login.name}
+    secret-key: ${rocketmq.login.passwd}
+    enable-msg-trace: true
+    group: crm-ddd-fund
+
+# Logging level
+logging:
+  level:
+    org.apache.rocketmq: debug
+

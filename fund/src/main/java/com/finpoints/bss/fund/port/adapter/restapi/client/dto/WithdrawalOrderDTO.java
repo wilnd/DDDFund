@@ -1,7 +1,6 @@
-package com.finpoints.bss.fund.port.adapter.restapi.dto;
+package com.finpoints.bss.fund.port.adapter.restapi.client.dto;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
-import com.finpoints.bss.fund.domain.model.common.Currency;
 import com.finpoints.bss.fund.domain.model.wallet.WalletType;
 import com.finpoints.bss.fund.domain.model.withdrawal.WithdrawalMethod;
 import com.finpoints.bss.fund.domain.model.withdrawal.WithdrawalOrder;

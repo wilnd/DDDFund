@@ -1,9 +1,10 @@
 package com.finpoints.bss.fund.jpa;
 
-import com.finpoints.bss.common.domain.model.CrudRepository;
-import com.finpoints.bss.common.domain.model.Entity;
-import com.finpoints.bss.common.domain.model.Identity;
+import com.finpoints.bss.common.domain.model.*;
 import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public abstract class AbstractRepository<DE extends Entity, DID extends Identity, PE extends JpaEntityBase, PID>
         implements CrudRepository<DE, DID> {
@@ -23,7 +24,31 @@ public abstract class AbstractRepository<DE extends Entity, DID extends Identity
         if (persistenceEntity == null) {
             return null;
         }
+        if (entity instanceof AggregateRoot aggregateRoot) {
+            List<DomainEvent> events = aggregateRoot.pullDomainEvents();
+            DomainEventPublisher.instance().publishAll(events);
+        }
         return convertToDomain(jpaRepository.save(persistenceEntity));
+    }
+
+    @Override
+    public Iterable<DE> saveAll(Iterable<DE> entities) {
+        List<PE> persistenceEntities = new ArrayList<>();
+        for (DE entity : entities) {
+            PE persistenceEntity = convertToPersistence(entity);
+            if (persistenceEntity == null) {
+                return null;
+            }
+            persistenceEntities.add(persistenceEntity);
+            if (entity instanceof AggregateRoot aggregateRoot) {
+                List<DomainEvent> events = aggregateRoot.pullDomainEvents();
+                DomainEventPublisher.instance().publishAll(events);
+            }
+        }
+        jpaRepository.saveAll(persistenceEntities);
+        return persistenceEntities.stream()
+                .map(this::convertToDomain)
+                .toList();
     }
 
     @Override

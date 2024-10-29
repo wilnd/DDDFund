@@ -6,6 +6,8 @@ public interface CrudRepository<T extends Entity, ID extends Identity> {
 
     T save(T entity);
 
+    Iterable<T> saveAll(Iterable<T> entities);
+
     T findById(ID id);
 
     void delete(T entity);

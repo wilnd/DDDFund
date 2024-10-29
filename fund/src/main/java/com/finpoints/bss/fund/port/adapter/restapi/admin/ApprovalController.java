@@ -1,8 +1,8 @@
-package com.finpoints.bss.fund.port.adapter.restapi;
+package com.finpoints.bss.fund.port.adapter.restapi.admin;
 
 import com.finpoints.bss.fund.application.approval.ApprovalService;
 import com.finpoints.bss.fund.domain.model.approval.Approval;
-import com.finpoints.bss.fund.port.adapter.restapi.dto.ApprovalDTO;
+import com.finpoints.bss.fund.port.adapter.restapi.admin.dto.ApprovalDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;

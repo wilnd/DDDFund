@@ -5,6 +5,7 @@ import com.finpoints.bss.fund.domain.model.wallet.WalletType;
 import com.finpoints.bss.fund.domain.model.withdrawal.WithdrawalMethod;
 import com.finpoints.bss.fund.domain.model.withdrawal.WithdrawalOrderStatus;
 import com.finpoints.bss.fund.jpa.JpaEntityBase;
+import com.finpoints.bss.fund.jpa.JpaVersionalEntityBase;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -16,7 +17,7 @@ import java.math.BigDecimal;
 @Entity
 @Table(name = "withdrawal_order")
 @AllArgsConstructor
-public class JpaWithdrawalOrder extends JpaEntityBase {
+public class JpaWithdrawalOrder extends JpaVersionalEntityBase {
 
     @Comment("出金订单号")
     @Column(length = 64, unique = true)

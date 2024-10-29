@@ -74,11 +74,8 @@ public class WithdrawalService implements ClientWithdrawalService {
 
         // 检查出金订单是否已存在
         WithdrawalOrderNo orderNo = command.getOrderNo() == null ? null : new WithdrawalOrderNo(command.getOrderNo());
-        if (orderNo != null) {
-            WithdrawalOrder order = withdrawalOrderRepository.findById(orderNo);
-            if (order != null) {
-                throw new RuntimeException("Withdrawal order already exists");
-            }
+        if (orderNo != null && withdrawalOrderRepository.existsById(orderNo)) {
+            throw new RuntimeException("Withdrawal order already exists");
         }
 
         // 出金策略

@@ -1,5 +1,6 @@
 package com.finpoints.bss.fund.domain.model.withdrawal;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.finpoints.bss.common.domain.model.DomainEvent;
 import com.finpoints.bss.common.domain.model.DomainEventModule;
 import com.finpoints.bss.fund.domain.model.wallet.WalletId;
@@ -19,6 +20,7 @@ public class WithdrawalOrderCancelled extends DomainEvent {
     private final BigDecimal amount;
     private final WithdrawalOrderStatus status;
 
+    @JsonCreator
     public WithdrawalOrderCancelled(WithdrawalOrderNo withdrawalOrderNo,
                                     WalletId walletId, WalletType walletType,
                                     WithdrawalMethod withdrawalMethod,

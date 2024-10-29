@@ -1,4 +1,4 @@
-package com.finpoints.bss.fund.port.adapter.restapi.dto;
+package com.finpoints.bss.fund.port.adapter.restapi.admin.dto;
 
 import com.finpoints.bss.fund.domain.model.approval.Approval;
 import com.finpoints.bss.fund.domain.model.approval.ApprovalRole;

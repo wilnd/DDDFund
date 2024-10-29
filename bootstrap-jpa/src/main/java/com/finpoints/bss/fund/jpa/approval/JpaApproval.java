@@ -1,10 +1,10 @@
 package com.finpoints.bss.fund.jpa.approval;
 
+import com.finpoints.bss.common.domain.model.Operator;
 import com.finpoints.bss.fund.domain.model.approval.ApprovalRole;
 import com.finpoints.bss.fund.domain.model.approval.ApprovalStatus;
 import com.finpoints.bss.fund.domain.model.approval.ApprovalType;
-import com.finpoints.bss.common.domain.model.Operator;
-import com.finpoints.bss.fund.jpa.JpaEntityBase;
+import com.finpoints.bss.fund.jpa.JpaVersionalEntityBase;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -14,7 +14,7 @@ import org.hibernate.annotations.Comment;
 @Entity
 @Table(name = "approval")
 @AllArgsConstructor
-public class JpaApproval extends JpaEntityBase {
+public class JpaApproval extends JpaVersionalEntityBase {
 
     /**
      * 审核单ID

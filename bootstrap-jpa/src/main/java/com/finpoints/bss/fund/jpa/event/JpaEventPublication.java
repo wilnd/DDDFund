@@ -80,7 +80,6 @@ public class JpaEventPublication {
     }
 
     JpaEventPublication markCompleted() {
-
         this.completionDate = Instant.now();
         return this;
     }

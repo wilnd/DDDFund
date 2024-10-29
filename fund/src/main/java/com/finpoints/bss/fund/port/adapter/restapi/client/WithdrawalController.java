@@ -1,4 +1,4 @@
-package com.finpoints.bss.fund.port.adapter.restapi;
+package com.finpoints.bss.fund.port.adapter.restapi.client;
 
 import com.finpoints.bss.common.requester.CurrentRequesterService;
 import com.finpoints.bss.fund.application.withdrawal.ClientWithdrawalService;
@@ -7,8 +7,8 @@ import com.finpoints.bss.fund.application.withdrawal.command.ApplyWithdrawalComm
 import com.finpoints.bss.fund.domain.model.common.UserId;
 import com.finpoints.bss.fund.domain.model.withdrawal.WithdrawalOrder;
 import com.finpoints.bss.fund.domain.model.withdrawal.WithdrawalOrderNo;
-import com.finpoints.bss.fund.port.adapter.restapi.dto.WithdrawalOrderDTO;
-import com.finpoints.bss.fund.port.adapter.restapi.request.ApplyWithdrawalRequest;
+import com.finpoints.bss.fund.port.adapter.restapi.client.dto.WithdrawalOrderDTO;
+import com.finpoints.bss.fund.port.adapter.restapi.client.request.ApplyWithdrawalRequest;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.web.bind.annotation.*;
 

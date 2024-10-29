@@ -1,5 +1,6 @@
 package com.finpoints.bss.fund.domain.model.approval;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.finpoints.bss.common.domain.model.DomainEvent;
 import com.finpoints.bss.common.domain.model.DomainEventModule;
 import lombok.Getter;
@@ -32,6 +33,7 @@ public class ApprovalRejected extends DomainEvent {
      */
     private final ApprovalStatus status;
 
+    @JsonCreator
     public ApprovalRejected(ApprovalId approvalId, ApprovalType type, ApprovalRole role,
                             String orderNo, ApprovalStatus status) {
         this.approvalId = approvalId;

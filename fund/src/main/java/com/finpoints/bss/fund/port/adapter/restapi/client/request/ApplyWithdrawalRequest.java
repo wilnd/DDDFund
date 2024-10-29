@@ -1,4 +1,4 @@
-package com.finpoints.bss.fund.port.adapter.restapi.request;
+package com.finpoints.bss.fund.port.adapter.restapi.client.request;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
 import com.finpoints.bss.fund.domain.model.wallet.WalletType;

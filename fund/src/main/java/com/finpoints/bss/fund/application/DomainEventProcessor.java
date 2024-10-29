@@ -5,19 +5,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.finpoints.bss.common.domain.model.DomainEvent;
 import com.finpoints.bss.fund.domain.model.event.EventRecord;
 import com.finpoints.bss.fund.domain.model.event.EventRecordRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.modulith.events.ApplicationModuleListener;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.event.TransactionalEventListener;
 
+@Slf4j
 @Component
 public class DomainEventProcessor {
 
-    private static final Logger log = LoggerFactory.getLogger(DomainEventProcessor.class);
     private final ObjectMapper objectMapper;
     private final EventRecordRepository eventRecordRepository;
 

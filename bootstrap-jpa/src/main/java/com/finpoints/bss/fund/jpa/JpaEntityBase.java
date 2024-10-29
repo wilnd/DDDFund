@@ -3,14 +3,12 @@ package com.finpoints.bss.fund.jpa;
 import com.finpoints.bss.common.domain.model.Entity;
 import jakarta.persistence.*;
 import lombok.Getter;
-import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
 import java.time.LocalDateTime;
 
 @Getter
-@Setter
 @MappedSuperclass
 public abstract class JpaEntityBase {
 
@@ -20,10 +18,6 @@ public abstract class JpaEntityBase {
 
     @Column(columnDefinition = "varchar(64) comment '应用ID'")
     private String appId;
-
-    @Version
-    @Column(columnDefinition = "int comment '版本号'")
-    private Integer version;
 
     @CreatedDate
     @Column(columnDefinition = "datetime(6) comment '创建时间'")
@@ -39,13 +33,12 @@ public abstract class JpaEntityBase {
     public void copyFrom(Entity entity) {
         this.id = entity.delegateId();
         this.appId = entity.getAppId();
-        this.version = entity.getVersion();
         this.createdTime = entity.getCreatedTime();
         this.updatedTime = entity.getUpdatedTime();
     }
 
     public void copyTo(Entity entity) {
-        entity.setAppIdAndVersion(this.getId(), this.getAppId(), this.getVersion());
+        entity.setAppIdAndVersion(this.getId(), this.getAppId());
         entity.setTime(this.getCreatedTime(), this.getUpdatedTime());
     }
 }
