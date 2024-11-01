@@ -1,2 +1,3 @@
 com.finpoints.bss.common.config.LockProviderConfig
 com.finpoints.bss.common.domain.model.DomainEventPublisher
+com.finpoints.bss.common.event.ComponentPathEventSerializer

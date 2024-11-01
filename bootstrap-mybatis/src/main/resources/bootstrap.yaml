@@ -1,0 +1,22 @@
+spring:
+  application:
+    name: ${APPLICATION_NAME:crm-fund}
+  main:
+    allow-bean-definition-overriding: true
+  cloud:
+    nacos:
+      server-addr: ${NACOS_SERVER_ADDR:nacos.evn}
+      username: ${NACOS_USERNAME:nacos}
+      password: ${NACOS_PASSWORD:nacos}
+      config:
+        namespace: ${NACOS_CONFIG_NAMESPACE:prod-java-namespace}
+        file-extension: yaml
+        maxRetry: 10
+        shared-configs:
+          - data-id: app-base-config.yaml
+            refresh: true
+      discovery:
+        namespace: ${NACOS_DISCOVERY_NAMESPACE:prod-java-namespace}
+        enabled: false
+        register-enabled: false
+

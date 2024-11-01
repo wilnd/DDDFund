@@ -1,8 +1,8 @@
-package com.finpoints.bss.fund.jpa;
+package com.finpoints.bss.fund.mybatis;
 
 import com.finpoints.bss.common.domain.model.Entity;
 
-public interface EntityConverter<DE extends Entity, PE extends JpaEntityBase> {
+public interface EntityConverter<DE extends Entity, PE extends EntityAdapter> {
 
     DE toDomainEntity(PE persistenceEntity);
 

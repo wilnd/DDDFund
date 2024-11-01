@@ -38,7 +38,7 @@ public abstract class JpaEntityBase {
     }
 
     public void copyTo(Entity entity) {
-        entity.setAppIdAndVersion(this.getId(), this.getAppId());
+        entity.setAppId(this.getId(), this.getAppId());
         entity.setTime(this.getCreatedTime(), this.getUpdatedTime());
     }
 }

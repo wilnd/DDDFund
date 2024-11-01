@@ -14,41 +14,41 @@ import java.math.BigDecimal;
 @Data
 public class ApplyWithdrawalRequest {
 
-    @Schema(description = "钱包ID")
+    @Schema(description = "钱包ID", example = "mock-wallet-1")
     @NotBlank(message = "钱包ID不能为空")
     private String walletId;
 
-    @Schema(description = "钱包类型")
+    @Schema(description = "钱包类型", example = "Trading")
     @NotNull(message = "钱包类型不能为空")
     private WalletType walletType;
 
-    @Schema(description = "出金方式")
+    @Schema(description = "出金方式", example = "Bank")
     @JsonAlias("type")
     @NotNull(message = "出金方式不能为空")
     private WithdrawalMethod withdrawalMethod;
 
-    @Schema(description = "出金金额")
+    @Schema(description = "出金金额", example = "100")
     @NotNull(message = "出金金额不能为空")
     @Min(value = 0, message = "出金金额不能小于0")
     private BigDecimal amount;
 
-    @Schema(description = "备注")
+    @Schema(description = "备注", example = "test wd")
     private String remark;
 
-    @Schema(description = "银行ID")
+    @Schema(description = "银行ID", example = "test-bank-1")
     private String bankId;
 
-    @Schema(description = "银行卡号")
+    @Schema(description = "银行卡号", example = "test-bank-card-1")
     private String bankCardId;
 
-    @Schema(description = "订单号")
+    @Schema(description = "订单号", example = "WD20210901000001")
     @JsonAlias("serial")
     private String orderNo;
 
-    @Schema(description = "MT账号")
+    @Schema(description = "MT账号", example = "10001")
     @JsonAlias("login")
     private String mtAccount;
 
-    @Schema(description = "MT服务器ID")
+    @Schema(description = "MT服务器ID", example = "test-mt-server-1")
     private String serverId;
 }

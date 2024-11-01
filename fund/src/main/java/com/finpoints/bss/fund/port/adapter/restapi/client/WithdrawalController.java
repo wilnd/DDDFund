@@ -13,7 +13,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/fund/withdrawal")
+@RequestMapping("/fund/client/withdrawal")
 public class WithdrawalController {
 
     private final CurrentRequesterService requesterService;

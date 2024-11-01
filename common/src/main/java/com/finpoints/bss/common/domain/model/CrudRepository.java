@@ -1,12 +1,14 @@
 package com.finpoints.bss.common.domain.model;
 
+import java.util.Collection;
+
 public interface CrudRepository<T extends Entity, ID extends Identity> {
 
     ID nextId();
 
     T save(T entity);
 
-    Iterable<T> saveAll(Iterable<T> entities);
+    Collection<T> saveAll(Collection<T> entities);
 
     T findById(ID id);
 

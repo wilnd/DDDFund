@@ -1,15 +1,17 @@
-package com.finpoints.bss.fund.jpa.wallet;
+package com.finpoints.bss.fund.jpa.impl;
 
 import com.finpoints.bss.common.domain.model.IdentityGenerator;
 import com.finpoints.bss.fund.domain.model.wallet.WalletTransaction;
 import com.finpoints.bss.fund.domain.model.wallet.WalletTransactionId;
 import com.finpoints.bss.fund.domain.model.wallet.WalletTransactionRepository;
-import com.finpoints.bss.fund.jpa.AbstractRepository;
-import com.finpoints.bss.fund.jpa.EntityConverter;
+import com.finpoints.bss.fund.jpa.CrudRepositoryImpl;
+import com.finpoints.bss.fund.jpa.JpaEntityConverter;
+import com.finpoints.bss.fund.jpa.wallet.JpaWalletTransaction;
+import com.finpoints.bss.fund.jpa.wallet.JpaWalletTransactionRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class WalletTransactionRepositoryImpl extends AbstractRepository<WalletTransaction, WalletTransactionId, JpaWalletTransaction, Long>
+public class WalletTransactionRepositoryImpl extends CrudRepositoryImpl<WalletTransaction, WalletTransactionId, JpaWalletTransaction, Long>
         implements WalletTransactionRepository {
 
     private final JpaWalletTransactionRepository jpaWalletTransactionRepository;
@@ -35,7 +37,7 @@ public class WalletTransactionRepositoryImpl extends AbstractRepository<WalletTr
     }
 
 
-    public static class JpaWalletTransactionEntityConverter implements EntityConverter<WalletTransaction, JpaWalletTransaction> {
+    public static class JpaWalletTransactionEntityConverter implements JpaEntityConverter<WalletTransaction, JpaWalletTransaction> {
 
         @Override
         public WalletTransaction toDomainEntity(JpaWalletTransaction persistenceEntity) {

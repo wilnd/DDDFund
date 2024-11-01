@@ -1,4 +1,4 @@
-package com.finpoints.bss.fund.jpa.withdrawal;
+package com.finpoints.bss.fund.jpa.impl;
 
 import com.finpoints.bss.common.domain.model.IdentityGenerator;
 import com.finpoints.bss.fund.domain.model.common.UserId;
@@ -8,12 +8,14 @@ import com.finpoints.bss.fund.domain.model.withdrawal.MTWithdrawalRequestId;
 import com.finpoints.bss.fund.domain.model.withdrawal.WithdrawalOrder;
 import com.finpoints.bss.fund.domain.model.withdrawal.WithdrawalOrderNo;
 import com.finpoints.bss.fund.domain.model.withdrawal.WithdrawalOrderRepository;
-import com.finpoints.bss.fund.jpa.AbstractRepository;
-import com.finpoints.bss.fund.jpa.EntityConverter;
+import com.finpoints.bss.fund.jpa.CrudRepositoryImpl;
+import com.finpoints.bss.fund.jpa.JpaEntityConverter;
+import com.finpoints.bss.fund.jpa.withdrawal.JpaWithdrawalOrder;
+import com.finpoints.bss.fund.jpa.withdrawal.JpaWithdrawalOrderRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class WithdrawalOrderRepositoryImpl extends AbstractRepository<WithdrawalOrder, WithdrawalOrderNo, JpaWithdrawalOrder, Long>
+public class WithdrawalOrderRepositoryImpl extends CrudRepositoryImpl<WithdrawalOrder, WithdrawalOrderNo, JpaWithdrawalOrder, Long>
         implements WithdrawalOrderRepository {
 
     private final JpaWithdrawalOrderRepository jpaWithdrawalOrderRepository;
@@ -46,7 +48,7 @@ public class WithdrawalOrderRepositoryImpl extends AbstractRepository<Withdrawal
         return convertToDomain(order);
     }
 
-    public static class WithdrawalOrderEntityConverter implements EntityConverter<WithdrawalOrder, JpaWithdrawalOrder> {
+    public static class WithdrawalOrderEntityConverter implements JpaEntityConverter<WithdrawalOrder, JpaWithdrawalOrder> {
         @Override
         public WithdrawalOrder toDomainEntity(JpaWithdrawalOrder persistenceEntity) {
             if (persistenceEntity == null) {

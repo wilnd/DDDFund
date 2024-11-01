@@ -9,12 +9,12 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class Approval extends AggregateRoot {
+public class ApprovalOrder extends AggregateRoot {
 
     /**
      * 审核单ID
      */
-    private final ApprovalId approvalId;
+    private final ApprovalOrderId orderId;
 
     /**
      * 业务类型
@@ -29,7 +29,7 @@ public class Approval extends AggregateRoot {
     /**
      * 关联业务订单号
      */
-    private final String orderNo;
+    private final String businessOrderNo;
 
     /**
      * 审核状态
@@ -41,19 +41,19 @@ public class Approval extends AggregateRoot {
      */
     private Operator operator;
 
-    public Approval(ApprovalId approvalId, ApprovalType type, ApprovalRole role, String orderNo) {
-        this.approvalId = approvalId;
+    public ApprovalOrder(ApprovalOrderId orderId, ApprovalType type, ApprovalRole role, String businessOrderNo) {
+        this.orderId = orderId;
         this.type = type;
         this.role = role;
-        this.orderNo = orderNo;
+        this.businessOrderNo = businessOrderNo;
         this.status = ApprovalStatus.Pending;
 
         DomainEventPublisher.instance()
-                .publish(new ApprovalCreated(
-                        this.approvalId,
+                .publish(new ApprovalOrderCreated(
+                        this.orderId,
                         this.type,
                         this.role,
-                        this.orderNo,
+                        this.businessOrderNo,
                         this.status
                 ));
     }
@@ -76,11 +76,11 @@ public class Approval extends AggregateRoot {
 
         // 事件发布
         DomainEventPublisher.instance()
-                .publish(new ApprovalApproved(
-                        this.approvalId,
+                .publish(new ApprovalOrderApproved(
+                        this.orderId,
                         this.type,
                         this.role,
-                        this.orderNo,
+                        this.businessOrderNo,
                         this.status
                 ));
     }
@@ -104,11 +104,11 @@ public class Approval extends AggregateRoot {
 
         // 事件发布
         DomainEventPublisher.instance()
-                .publish(new ApprovalRejected(
-                        this.approvalId,
+                .publish(new ApprovalOrderRejected(
+                        this.orderId,
                         this.type,
                         this.role,
-                        this.orderNo,
+                        this.businessOrderNo,
                         this.status
                 ));
     }

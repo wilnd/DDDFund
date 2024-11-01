@@ -1,15 +1,17 @@
-package com.finpoints.bss.fund.jpa.event;
+package com.finpoints.bss.fund.jpa.impl;
 
 import com.finpoints.bss.common.domain.model.IdentityGenerator;
 import com.finpoints.bss.fund.domain.model.event.EventRecord;
 import com.finpoints.bss.fund.domain.model.event.EventRecordId;
 import com.finpoints.bss.fund.domain.model.event.EventRecordRepository;
-import com.finpoints.bss.fund.jpa.AbstractRepository;
-import com.finpoints.bss.fund.jpa.EntityConverter;
+import com.finpoints.bss.fund.jpa.CrudRepositoryImpl;
+import com.finpoints.bss.fund.jpa.JpaEntityConverter;
+import com.finpoints.bss.fund.jpa.event.JpaEventRecord;
+import com.finpoints.bss.fund.jpa.event.JpaEventRecordRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class EventRecordRepositoryImpl extends AbstractRepository<EventRecord, EventRecordId, JpaEventRecord, Long>
+public class EventRecordRepositoryImpl extends CrudRepositoryImpl<EventRecord, EventRecordId, JpaEventRecord, Long>
         implements EventRecordRepository {
 
     private final JpaEventRecordRepository jpaEventRecordRepository;
@@ -35,7 +37,7 @@ public class EventRecordRepositoryImpl extends AbstractRepository<EventRecord, E
         return jpaEventRecordRepository.existsByEventId(eventRecordId.rawId());
     }
 
-    public static class EventRecordEntityConverter implements EntityConverter<EventRecord, JpaEventRecord> {
+    public static class EventRecordEntityConverter implements JpaEntityConverter<EventRecord, JpaEventRecord> {
 
         @Override
         public EventRecord toDomainEntity(JpaEventRecord persistenceEntity) {

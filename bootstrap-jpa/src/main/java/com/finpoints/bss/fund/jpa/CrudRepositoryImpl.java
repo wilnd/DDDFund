@@ -4,15 +4,16 @@ import com.finpoints.bss.common.domain.model.*;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
-public abstract class AbstractRepository<DE extends Entity, DID extends Identity, PE extends JpaEntityBase, PID>
+public abstract class CrudRepositoryImpl<DE extends Entity, DID extends Identity, PE extends JpaEntityBase, PID>
         implements CrudRepository<DE, DID> {
 
-    private final EntityConverter<DE, PE> entityConverter;
+    private final JpaEntityConverter<DE, PE> entityConverter;
     protected final JpaRepository<PE, PID> jpaRepository;
 
-    public AbstractRepository(EntityConverter<DE, PE> entityConverter,
+    public CrudRepositoryImpl(JpaEntityConverter<DE, PE> entityConverter,
                               JpaRepository<PE, PID> jpaRepository) {
         this.entityConverter = entityConverter;
         this.jpaRepository = jpaRepository;
@@ -32,7 +33,7 @@ public abstract class AbstractRepository<DE extends Entity, DID extends Identity
     }
 
     @Override
-    public Iterable<DE> saveAll(Iterable<DE> entities) {
+    public Collection<DE> saveAll(Collection<DE> entities) {
         List<PE> persistenceEntities = new ArrayList<>();
         for (DE entity : entities) {
             PE persistenceEntity = convertToPersistence(entity);

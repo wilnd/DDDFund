@@ -14,14 +14,14 @@ import org.hibernate.annotations.Comment;
 @Entity
 @Table(name = "approval")
 @AllArgsConstructor
-public class JpaApproval extends JpaVersionalEntityBase {
+public class JpaApprovalOrder extends JpaVersionalEntityBase {
 
     /**
      * 审核单ID
      */
     @Comment("钱包ID")
     @Column(length = 64, unique = true)
-    private String approvalId;
+    private String orderId;
 
     /**
      * 业务类型
@@ -39,7 +39,7 @@ public class JpaApproval extends JpaVersionalEntityBase {
      * 关联业务订单号
      */
     @Column(length = 64)
-    private String orderNo;
+    private String businessOrderNo;
 
     /**
      * 审核状态
@@ -53,6 +53,6 @@ public class JpaApproval extends JpaVersionalEntityBase {
     @Embedded
     private Operator operator;
 
-    protected JpaApproval() {
+    protected JpaApprovalOrder() {
     }
 }

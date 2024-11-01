@@ -1,6 +1,6 @@
 package com.finpoints.bss.fund.port.adapter.restapi.admin.dto;
 
-import com.finpoints.bss.fund.domain.model.approval.Approval;
+import com.finpoints.bss.fund.domain.model.approval.ApprovalOrder;
 import com.finpoints.bss.fund.domain.model.approval.ApprovalRole;
 import com.finpoints.bss.fund.domain.model.approval.ApprovalStatus;
 import com.finpoints.bss.fund.domain.model.approval.ApprovalType;
@@ -36,16 +36,16 @@ public class ApprovalDTO {
     @Schema(description = "审核用户角色")
     private String operatorUserRole;
 
-    public static ApprovalDTO from(Approval approval) {
+    public static ApprovalDTO from(ApprovalOrder approvalOrder) {
         return new ApprovalDTO(
-                approval.getApprovalId().rawId(),
-                approval.getType(),
-                approval.getRole(),
-                approval.getOrderNo(),
-                approval.getStatus(),
-                approval.getOperator().getUserId(),
-                approval.getOperator().getUserName(),
-                approval.getOperator().getRole()
+                approvalOrder.getOrderId().rawId(),
+                approvalOrder.getType(),
+                approvalOrder.getRole(),
+                approvalOrder.getBusinessOrderNo(),
+                approvalOrder.getStatus(),
+                approvalOrder.getOperator().getUserId(),
+                approvalOrder.getOperator().getUserName(),
+                approvalOrder.getOperator().getRole()
         );
     }
 }

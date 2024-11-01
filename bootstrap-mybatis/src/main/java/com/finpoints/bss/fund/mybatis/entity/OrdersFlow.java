@@ -5,6 +5,8 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.extension.handlers.FastjsonTypeHandler;
+import com.finpoints.bss.common.domain.model.Entity;
+import com.finpoints.bss.fund.mybatis.EntityAdapter;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -27,11 +29,11 @@ import java.util.List;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
-@TableName(value = "api_orders_flow",autoResultMap = true)
-public class OrdersFlow implements Serializable {
+@TableName(value = "api_orders_flow", autoResultMap = true)
+public class OrdersFlow implements EntityAdapter, Serializable {
 
     private static final long serialVersionUID = 6711402180748846658L;
-    @TableId(value = "id",type = IdType.AUTO)
+    @TableId(value = "id", type = IdType.AUTO)
     private String id;
     /**
      * appid
@@ -411,4 +413,25 @@ public class OrdersFlow implements Serializable {
      * BSSCODE
      */
     private String clearingMark;
+
+    @Override
+    public Serializable id() {
+        return this.id;
+    }
+
+    @Override
+    public boolean softDelete() {
+        this.isDeleted = 1;
+        return true;
+    }
+
+    @Override
+    public void copyFrom(Entity entity) {
+
+    }
+
+    @Override
+    public void copyTo(Entity entity) {
+
+    }
 }

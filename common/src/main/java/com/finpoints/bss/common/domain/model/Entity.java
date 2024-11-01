@@ -20,10 +20,9 @@ public abstract class Entity extends IdentifiedDomainObject {
         this.updatedTime = LocalDateTime.now();
     }
 
-    public void setAppIdAndVersion(Long delegateId, String appId) {
+    public void setAppId(Long delegateId, String appId) {
         super.setId(delegateId);
         this.setAppId(appId);
-        this.setVersion(version);
     }
 
     public void setTime(LocalDateTime createdTime, LocalDateTime updatedTime) {
@@ -42,6 +41,4 @@ public abstract class Entity extends IdentifiedDomainObject {
     private void setUpdatedTime(LocalDateTime updatedTime) {
         this.updatedTime = updatedTime;
     }
-
-
 }

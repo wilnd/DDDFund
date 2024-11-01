@@ -102,7 +102,7 @@ public class WithdrawalOrder extends AggregateRoot {
         Validate.isTrue(this.status == WithdrawalOrderStatus.CREATED, "Expected status is CREATED");
 
         // 冻结出金金额
-        this.frozenTransactionId = walletOperationService.freezeBalance(
+        this.frozenTransactionId = walletOperationService.freezeWalletAmount(
                 this.getWalletId(),
                 FrozenType.Withdrawal, amount,
                 generateIdemKey("submitWithdrawal"),
@@ -129,7 +129,7 @@ public class WithdrawalOrder extends AggregateRoot {
                 "Expected status is PENDING or APPROVING");
 
         // 解冻出金金额
-        walletOperationService.unfreezeBalance(
+        walletOperationService.unfreezeWalletAmount(
                 walletId, frozenTransactionId,
                 FrozenType.WithdrawalCancel, amount,
                 generateIdemKey("cancelWithdrawal"),

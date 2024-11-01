@@ -1,7 +1,7 @@
 package com.finpoints.bss.fund.application.withdrawal;
 
-import com.finpoints.bss.fund.domain.model.approval.ApprovalApproved;
-import com.finpoints.bss.fund.domain.model.approval.ApprovalRejected;
+import com.finpoints.bss.fund.domain.model.approval.ApprovalOrderApproved;
+import com.finpoints.bss.fund.domain.model.approval.ApprovalOrderRejected;
 import com.finpoints.bss.fund.domain.model.wallet.WalletOperationService;
 import com.finpoints.bss.fund.domain.model.withdrawal.WithdrawalOrder;
 import com.finpoints.bss.fund.domain.model.withdrawal.WithdrawalOrderNo;
@@ -36,7 +36,7 @@ public class WithdrawalEventProcessor {
      * 处理出金风控审批通过事件
      */
     @ApplicationModuleListener(condition = "#event.type.name() == 'Withdrawal' and #event.role.name() == 'Risk'")
-    public void processWithdrawalRiskApproved(ApprovalApproved event) {
+    public void processWithdrawalRiskApproved(ApprovalOrderApproved event) {
 
         WithdrawalOrder order = withdrawalOrderRepository.findById(new WithdrawalOrderNo(event.getOrderNo()));
         if (order == null) {
@@ -57,7 +57,7 @@ public class WithdrawalEventProcessor {
     @Async
     @TransactionalEventListener(condition = "#event.type.name() == 'Withdrawal' and " +
             "(#event.role.name() == 'Risk' or #event.role.name() == 'Finance')")
-    public void processWithdrawalRejected(ApprovalRejected event) {
+    public void processWithdrawalRejected(ApprovalOrderRejected event) {
 
         WithdrawalOrder order = withdrawalOrderRepository.findById(new WithdrawalOrderNo(event.getOrderNo()));
         if (order == null) {

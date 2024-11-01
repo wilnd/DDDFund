@@ -1,4 +1,4 @@
-package com.finpoints.bss.fund.jpa.wallet;
+package com.finpoints.bss.fund.jpa.impl;
 
 import com.finpoints.bss.common.domain.model.IdentityGenerator;
 import com.finpoints.bss.fund.domain.model.common.UserId;
@@ -6,12 +6,14 @@ import com.finpoints.bss.fund.domain.model.wallet.FrozenTransaction;
 import com.finpoints.bss.fund.domain.model.wallet.FrozenTransactionId;
 import com.finpoints.bss.fund.domain.model.wallet.FrozenTransactionRepository;
 import com.finpoints.bss.fund.domain.model.wallet.WalletId;
-import com.finpoints.bss.fund.jpa.AbstractRepository;
-import com.finpoints.bss.fund.jpa.EntityConverter;
+import com.finpoints.bss.fund.jpa.CrudRepositoryImpl;
+import com.finpoints.bss.fund.jpa.JpaEntityConverter;
+import com.finpoints.bss.fund.jpa.wallet.JpaFrozenTransaction;
+import com.finpoints.bss.fund.jpa.wallet.JpaFrozenTransactionRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class FrozenTransactionRepositoryImpl extends AbstractRepository<FrozenTransaction, FrozenTransactionId, JpaFrozenTransaction, Long>
+public class FrozenTransactionRepositoryImpl extends CrudRepositoryImpl<FrozenTransaction, FrozenTransactionId, JpaFrozenTransaction, Long>
         implements FrozenTransactionRepository {
 
     private final JpaFrozenTransactionRepository jpaFrozenTransactionRepository;
@@ -43,7 +45,7 @@ public class FrozenTransactionRepositoryImpl extends AbstractRepository<FrozenTr
         return convertToDomain(transaction);
     }
 
-    public static class FrozenTransactionEntityConverter implements EntityConverter<FrozenTransaction, JpaFrozenTransaction> {
+    public static class FrozenTransactionEntityConverter implements JpaEntityConverter<FrozenTransaction, JpaFrozenTransaction> {
 
         @Override
         public FrozenTransaction toDomainEntity(JpaFrozenTransaction persistenceEntity) {

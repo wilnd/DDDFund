@@ -62,6 +62,10 @@ springdoc:
       display-name: 'Admin API'
       packages-to-scan:
         - com.finpoints.bss.fund.port.adapter.restapi.admin
+    - group: internal
+      display-name: 'Internal API'
+      packages-to-scan:
+        - com.finpoints.bss.fund.port.adapter.restapi.internal
 
 # RocketMQ config
 rocketmq:
@@ -84,4 +88,5 @@ rocketmq:
 logging:
   level:
     org.apache.rocketmq: debug
+    org.springframework.boot.availability: debug
 

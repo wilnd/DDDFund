@@ -1,17 +1,16 @@
 package com.finpoints.bss.fund.domain.model.approval;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.finpoints.bss.common.domain.model.DomainEvent;
 import com.finpoints.bss.common.domain.model.DomainEventModule;
 import lombok.Getter;
 
 @Getter
-public class ApprovalApproved extends DomainEvent {
+public class ApprovalOrderApproved extends DomainEvent {
 
     /**
      * 审核单ID
      */
-    private final ApprovalId approvalId;
+    private final ApprovalOrderId approvalOrderId;
 
     /**
      * 业务类型
@@ -33,10 +32,9 @@ public class ApprovalApproved extends DomainEvent {
      */
     private final ApprovalStatus status;
 
-    @JsonCreator
-    public ApprovalApproved(ApprovalId approvalId, ApprovalType type, ApprovalRole role,
-                            String orderNo, ApprovalStatus status) {
-        this.approvalId = approvalId;
+    public ApprovalOrderApproved(ApprovalOrderId approvalOrderId, ApprovalType type, ApprovalRole role,
+                                 String orderNo, ApprovalStatus status) {
+        this.approvalOrderId = approvalOrderId;
         this.type = type;
         this.role = role;
         this.orderNo = orderNo;

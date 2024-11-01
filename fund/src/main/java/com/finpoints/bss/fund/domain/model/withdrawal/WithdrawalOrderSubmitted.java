@@ -1,6 +1,5 @@
 package com.finpoints.bss.fund.domain.model.withdrawal;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.finpoints.bss.common.domain.model.DomainEvent;
 import com.finpoints.bss.common.domain.model.DomainEventModule;
 import com.finpoints.bss.common.event.ExternalEvent;
@@ -23,7 +22,6 @@ public class WithdrawalOrderSubmitted extends DomainEvent implements ExternalEve
     private final BigDecimal amount;
     private final WithdrawalOrderStatus status;
 
-    @JsonCreator
     public WithdrawalOrderSubmitted(WithdrawalOrderNo withdrawalOrderNo, UserId userId,
                                     WalletId walletId, WalletType walletType,
                                     WithdrawalMethod withdrawalMethod,
@@ -46,7 +44,7 @@ public class WithdrawalOrderSubmitted extends DomainEvent implements ExternalEve
 
     @Override
     public String topic() {
-        return "test-topic";
+        return "TopicTest";
     }
 
     @Override

@@ -3,17 +3,16 @@ package com.finpoints.bss.fund.port.adapter.service;
 import com.finpoints.bss.common.lock.LockProvider;
 import com.finpoints.bss.common.lock.WLock;
 import com.finpoints.bss.fund.domain.model.wallet.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.WeakHashMap;
 
+@Slf4j
 @Service
 public class WalletOperationServiceImpl implements WalletOperationService {
 
-    private static final Logger log = LoggerFactory.getLogger(WalletOperationServiceImpl.class);
     private final LockProvider lockProvider;
     private final WeakHashMap<WalletId, WLock> walletLockMap = new WeakHashMap<>();
 
@@ -42,8 +41,8 @@ public class WalletOperationServiceImpl implements WalletOperationService {
     }
 
     @Override
-    public FrozenTransactionId freezeBalance(WalletId walletId, FrozenType freezeType, BigDecimal amount,
-                                             String idemKey, String remark) {
+    public FrozenTransactionId freezeWalletAmount(WalletId walletId, FrozenType freezeType, BigDecimal amount,
+                                                  String idemKey, String remark) {
         WLock lock = walletLockMap.get(walletId);
         if (lock == null || !lock.isHeldByCurrentThread()) {
             throw new RuntimeException("Wallet lock is not found or not locked");
@@ -71,8 +70,8 @@ public class WalletOperationServiceImpl implements WalletOperationService {
     }
 
     @Override
-    public void unfreezeBalance(WalletId walletId, FrozenTransactionId transactionId, FrozenType unfreezeType, BigDecimal amount,
-                                String serviceCurrency, BigDecimal serviceCharge, String idemKey, String remark) {
+    public void unfreezeWalletAmount(WalletId walletId, FrozenTransactionId transactionId, FrozenType unfreezeType, BigDecimal amount,
+                                     String serviceCurrency, BigDecimal serviceCharge, String idemKey, String remark) {
         WLock lock = walletLockMap.get(walletId);
         if (lock == null || !lock.isHeldByCurrentThread()) {
             throw new RuntimeException("Wallet lock is not found or not locked");
@@ -112,7 +111,7 @@ public class WalletOperationServiceImpl implements WalletOperationService {
     }
 
     @Override
-    public void increaseFrozenAmount(WalletId walletId, BigDecimal amount, String idemKey) {
+    public void addWalletFreezeAmount(WalletId walletId, BigDecimal amount, String idemKey) {
         WLock lock = walletLockMap.get(walletId);
         if (lock == null || !lock.isHeldByCurrentThread()) {
             throw new RuntimeException("Wallet lock is not found or not locked");
@@ -121,7 +120,7 @@ public class WalletOperationServiceImpl implements WalletOperationService {
     }
 
     @Override
-    public void deductFrozenAmount(WalletId walletId, BigDecimal amount, String idemKey) {
+    public void deductWalletFreezeAmount(WalletId walletId, BigDecimal amount, String idemKey) {
         WLock lock = walletLockMap.get(walletId);
         if (lock == null || !lock.isHeldByCurrentThread()) {
             throw new RuntimeException("Wallet lock is not found or not locked");

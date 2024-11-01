@@ -24,8 +24,8 @@ public interface WalletOperationService {
      * @param amount   冻结金额
      * @param idemKey  幂等key，由业务决定
      */
-    FrozenTransactionId freezeBalance(WalletId walletId, FrozenType freezeType,
-                                      BigDecimal amount, String idemKey, String remark);
+    FrozenTransactionId freezeWalletAmount(WalletId walletId, FrozenType freezeType,
+                                           BigDecimal amount, String idemKey, String remark);
 
 
     /**
@@ -36,9 +36,9 @@ public interface WalletOperationService {
      * @param amount       解冻金额
      * @param idemKey      幂等key，由业务决定
      */
-    default void unfreezeBalance(WalletId walletId, FrozenTransactionId transactionId, FrozenType unfreezeType,
-                                 BigDecimal amount, String idemKey, String remark) {
-        unfreezeBalance(walletId, transactionId, unfreezeType, amount, null, BigDecimal.ZERO, idemKey, remark);
+    default void unfreezeWalletAmount(WalletId walletId, FrozenTransactionId transactionId, FrozenType unfreezeType,
+                                      BigDecimal amount, String idemKey, String remark) {
+        unfreezeWalletAmount(walletId, transactionId, unfreezeType, amount, null, BigDecimal.ZERO, idemKey, remark);
     }
 
     /**
@@ -51,8 +51,8 @@ public interface WalletOperationService {
      * @param serviceCurrency 服务费币种
      * @param idemKey         幂等key，由业务决定
      */
-    void unfreezeBalance(WalletId walletId, FrozenTransactionId transactionId, FrozenType unfreezeType, BigDecimal amount,
-                         String serviceCurrency, BigDecimal serviceCharge, String idemKey, String remark);
+    void unfreezeWalletAmount(WalletId walletId, FrozenTransactionId transactionId, FrozenType unfreezeType, BigDecimal amount,
+                              String serviceCurrency, BigDecimal serviceCharge, String idemKey, String remark);
 
     /**
      * 增加钱包冻结资金
@@ -61,7 +61,7 @@ public interface WalletOperationService {
      * @param amount   增加金额
      * @param idemKey  幂等key，由业务决定
      */
-    void increaseFrozenAmount(WalletId walletId, BigDecimal amount, String idemKey);
+    void addWalletFreezeAmount(WalletId walletId, BigDecimal amount, String idemKey);
 
     /**
      * 扣减冻结冻结资金
@@ -70,5 +70,5 @@ public interface WalletOperationService {
      * @param amount   扣减金额
      * @param idemKey  幂等key，由业务决定
      */
-    void deductFrozenAmount(WalletId walletId, BigDecimal amount, String idemKey);
+    void deductWalletFreezeAmount(WalletId walletId, BigDecimal amount, String idemKey);
 }

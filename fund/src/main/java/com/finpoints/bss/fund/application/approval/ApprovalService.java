@@ -1,8 +1,8 @@
 package com.finpoints.bss.fund.application.approval;
 
-import com.finpoints.bss.fund.domain.model.approval.Approval;
-import com.finpoints.bss.fund.domain.model.approval.ApprovalId;
-import com.finpoints.bss.fund.domain.model.approval.ApprovalRepository;
+import com.finpoints.bss.fund.domain.model.approval.ApprovalOrder;
+import com.finpoints.bss.fund.domain.model.approval.ApprovalOrderId;
+import com.finpoints.bss.fund.domain.model.approval.ApprovalOrderRepository;
 import com.finpoints.bss.common.requester.CurrentRequesterService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,40 +14,40 @@ public class ApprovalService {
 
     private static final Logger log = LoggerFactory.getLogger(ApprovalService.class);
     private final CurrentRequesterService requesterService;
-    private final ApprovalRepository approvalRepository;
+    private final ApprovalOrderRepository approvalRepository;
 
     public ApprovalService(CurrentRequesterService requesterService,
-                           ApprovalRepository approvalRepository) {
+                           ApprovalOrderRepository approvalRepository) {
         this.requesterService = requesterService;
         this.approvalRepository = approvalRepository;
     }
 
     @Transactional
-    public Approval approval(String anApprovalId) {
-        ApprovalId approvalId = new ApprovalId(anApprovalId);
-        Approval approval = approvalRepository.findById(approvalId);
-        if (approval == null) {
+    public ApprovalOrder approval(String anApprovalId) {
+        ApprovalOrderId approvalOrderId = new ApprovalOrderId(anApprovalId);
+        ApprovalOrder approvalOrder = approvalRepository.findById(approvalOrderId);
+        if (approvalOrder == null) {
             throw new IllegalArgumentException("Approval not found");
         }
 
-        approval.approve(requesterService);
-        log.info("Approval approved: {}, operator: {}", approvalId, approval.getOperator());
+        approvalOrder.approve(requesterService);
+        log.info("Approval approved: {}, operator: {}", approvalOrderId, approvalOrder.getOperator());
 
-        return approvalRepository.save(approval);
+        return approvalRepository.save(approvalOrder);
     }
 
 
     @Transactional
-    public Approval reject(String anApprovalId) {
-        ApprovalId approvalId = new ApprovalId(anApprovalId);
-        Approval approval = approvalRepository.findById(approvalId);
-        if (approval == null) {
+    public ApprovalOrder reject(String anApprovalId) {
+        ApprovalOrderId approvalOrderId = new ApprovalOrderId(anApprovalId);
+        ApprovalOrder approvalOrder = approvalRepository.findById(approvalOrderId);
+        if (approvalOrder == null) {
             throw new IllegalArgumentException("Approval not found");
         }
 
-        approval.reject(requesterService);
-        log.info("Approval rejected: {}, operator: {}", approvalId, approval.getOperator());
+        approvalOrder.reject(requesterService);
+        log.info("Approval rejected: {}, operator: {}", approvalOrderId, approvalOrder.getOperator());
 
-        return approvalRepository.save(approval);
+        return approvalRepository.save(approvalOrder);
     }
 }

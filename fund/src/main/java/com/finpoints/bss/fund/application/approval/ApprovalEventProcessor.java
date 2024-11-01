@@ -10,18 +10,16 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.BooleanUtils;
 import org.springframework.modulith.events.ApplicationModuleListener;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.event.TransactionPhase;
-import org.springframework.transaction.event.TransactionalEventListener;
 
 @Slf4j
 @Component
 public class ApprovalEventProcessor {
 
-    private final ApprovalRepository approvalRepository;
+    private final ApprovalOrderRepository approvalRepository;
     private final CurrentRequesterService requesterService;
     private final WithdrawalSettingsService withdrawalSettingsService;
 
-    public ApprovalEventProcessor(ApprovalRepository approvalRepository,
+    public ApprovalEventProcessor(ApprovalOrderRepository approvalRepository,
                                   CurrentRequesterService requesterService,
                                   WithdrawalSettingsService withdrawalSettingsService) {
         this.approvalRepository = approvalRepository;
@@ -32,49 +30,49 @@ public class ApprovalEventProcessor {
     @ApplicationModuleListener
     public void processWithdrawalSubmitted(WithdrawalOrderSubmitted event) {
         // 幂等性检查
-        Approval approval = approvalRepository.orderApproval(ApprovalType.Withdrawal, ApprovalRole.Risk,
+        ApprovalOrder approvalOrder = approvalRepository.orderApproval(ApprovalType.Withdrawal, ApprovalRole.Risk,
                 event.getWithdrawalOrderNo().rawId());
-        if (approval != null) {
+        if (approvalOrder != null) {
             log.warn("Risk Approval already exists for withdrawal order {}", event.getWithdrawalOrderNo());
             return;
         }
 
         // 创建风控审核单
-        approval = new Approval(
-                new ApprovalId(IdentityGenerator.nextIdentity()),
+        approvalOrder = new ApprovalOrder(
+                new ApprovalOrderId(IdentityGenerator.nextIdentity()),
                 ApprovalType.Withdrawal, ApprovalRole.Risk,
                 event.getWithdrawalOrderNo().rawId());
         log.info("Risk Approval created for withdrawal order {}, approval {}",
-                event.getWithdrawalOrderNo(), approval.getApprovalId());
+                event.getWithdrawalOrderNo(), approvalOrder.getOrderId());
 
         // 自动审核
         WithdrawalSettings settings = withdrawalSettingsService.getUserSetting(event.getUserId());
         if (BooleanUtils.isTrue(settings.getAutoApproval())) {
-            approval.approve(requesterService);
+            approvalOrder.approve(requesterService);
             log.info("Auto approved withdrawal order {}, approval {}",
-                    event.getWithdrawalOrderNo(), approval.getApprovalId());
+                    event.getWithdrawalOrderNo(), approvalOrder.getOrderId());
         }
-        approvalRepository.save(approval);
+        approvalRepository.save(approvalOrder);
     }
 
     @ApplicationModuleListener(condition = "#event.type.name() == 'Withdrawal' and #event.role.name() == 'Risk'")
-    public void processWithdrawalRiskApproved(ApprovalApproved event) {
+    public void processWithdrawalRiskApproved(ApprovalOrderApproved event) {
         // 幂等性检查
-        Approval approval = approvalRepository.orderApproval(ApprovalType.Withdrawal, ApprovalRole.Finance,
+        ApprovalOrder approvalOrder = approvalRepository.orderApproval(ApprovalType.Withdrawal, ApprovalRole.Finance,
                 event.getOrderNo());
-        if (approval != null) {
+        if (approvalOrder != null) {
             log.warn("Finance Approval already exists for withdrawal order {}", event.getOrderNo());
             return;
         }
 
         // 创建财务审核单
-        approval = new Approval(
-                new ApprovalId(IdentityGenerator.nextIdentity()),
+        approvalOrder = new ApprovalOrder(
+                new ApprovalOrderId(IdentityGenerator.nextIdentity()),
                 ApprovalType.Withdrawal, ApprovalRole.Finance,
                 event.getOrderNo());
         log.info("Finance Approval created for withdrawal order {}, approval {}",
-                event.getOrderNo(), approval.getApprovalId());
+                event.getOrderNo(), approvalOrder.getOrderId());
 
-        approvalRepository.save(approval);
+        approvalRepository.save(approvalOrder);
     }
 }

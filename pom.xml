@@ -27,10 +27,15 @@
         <maven.compiler.target>17</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <spring-cloud.version>2023.0.3</spring-cloud.version>
+        <spring-cloud-nacos.version>2023.0.1.3</spring-cloud-nacos.version>
         <spring-modulith.version>1.2.3</spring-modulith.version>
         <redisson.version>3.22.0</redisson.version>
         <spring-doc.version>2.6.0</spring-doc.version>
         <rocketmq.version>2.3.1</rocketmq.version>
+        <mybatis-spring.version>3.0.3</mybatis-spring.version>
+        <mybatis-plus.version>3.5.9</mybatis-plus.version>
+        <shardingsphere.version>5.1.2</shardingsphere.version>
+        <druid.version>1.2.23</druid.version>
     </properties>
 
     <dependencyManagement>
@@ -72,6 +77,61 @@
                 <version>${spring-doc.version}</version>
             </dependency>
 
+            <dependency>
+                <groupId>org.mybatis</groupId>
+                <artifactId>mybatis-typehandlers-jsr310</artifactId>
+                <version>1.0.2</version>
+            </dependency>
+            <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>mybatis-plus-spring-boot3-starter</artifactId>
+                <version>${mybatis-plus.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>mybatis-plus-spring-boot-autoconfigure</artifactId>
+                <version>${mybatis-plus.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.mybatis.spring.boot</groupId>
+                <artifactId>mybatis-spring-boot-starter</artifactId>
+                <version>${mybatis-spring.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.mybatis.spring.boot</groupId>
+                <artifactId>mybatis-spring-boot-starter-test</artifactId>
+                <version>${mybatis-spring.version}</version>
+                <scope>test</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>com.alibaba.cloud</groupId>
+                <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
+                <version>${spring-cloud-nacos.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.alibaba.cloud</groupId>
+                <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
+                <version>${spring-cloud-nacos.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.alibaba.cloud</groupId>
+                <artifactId>spring-alibaba-nacos-config</artifactId>
+                <version>${spring-cloud-nacos.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.shardingsphere</groupId>
+                <artifactId>shardingsphere-jdbc-core-spring-boot-starter</artifactId>
+                <version>${shardingsphere.version}</version>
+            </dependency>
+
+            <!-- https://mvnrepository.com/artifact/com.alibaba/druid -->
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>druid</artifactId>
+                <version>${druid.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 

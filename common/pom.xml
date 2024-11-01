@@ -44,5 +44,10 @@
             <artifactId>redisson</artifactId>
             <scope>compile</scope>
         </dependency>
+
+        <dependency>
+            <groupId>org.springframework.modulith</groupId>
+            <artifactId>spring-modulith-events-core</artifactId>
+        </dependency>
     </dependencies>
 </project>
