@@ -13,7 +13,7 @@ import java.math.BigDecimal;
 
 @Getter
 @Entity
-@Table(name = "frozen_transaction")
+@Table(name = "frozen_flow")
 @AllArgsConstructor
 public class JpaFrozenFlow extends JpaEntityBase {
 

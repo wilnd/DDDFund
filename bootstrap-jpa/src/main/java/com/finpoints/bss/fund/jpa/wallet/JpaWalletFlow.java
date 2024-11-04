@@ -8,7 +8,7 @@ import lombok.Getter;
 
 @Getter
 @Entity
-@Table(name = "wallet_transaction")
+@Table(name = "wallet_flow")
 @AllArgsConstructor
-public class JpaWalletTransaction extends JpaEntityBase {
+public class JpaWalletFlow extends JpaEntityBase {
 }

@@ -4,7 +4,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface JpaFrozenTransactionRepository extends JpaRepository<JpaFrozenFlow, Long> {
+public interface JpaFrozenFlowRepository extends JpaRepository<JpaFrozenFlow, Long> {
 
     JpaFrozenFlow findByFlowId(String flowId);
 

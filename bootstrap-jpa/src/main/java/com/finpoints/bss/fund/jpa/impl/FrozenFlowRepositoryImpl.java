@@ -9,18 +9,18 @@ import com.finpoints.bss.fund.domain.model.wallet.WalletId;
 import com.finpoints.bss.fund.jpa.CrudRepositoryImpl;
 import com.finpoints.bss.fund.jpa.JpaEntityConverter;
 import com.finpoints.bss.fund.jpa.wallet.JpaFrozenFlow;
-import com.finpoints.bss.fund.jpa.wallet.JpaFrozenTransactionRepository;
+import com.finpoints.bss.fund.jpa.wallet.JpaFrozenFlowRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
 public class FrozenFlowRepositoryImpl extends CrudRepositoryImpl<FrozenFlow, FrozenFlowId, JpaFrozenFlow, Long>
         implements FrozenFlowRepository {
 
-    private final JpaFrozenTransactionRepository jpaFrozenTransactionRepository;
+    private final JpaFrozenFlowRepository jpaFrozenFlowRepository;
 
-    public FrozenFlowRepositoryImpl(JpaFrozenTransactionRepository jpaFrozenTransactionRepository) {
-        super(new FrozenTransactionEntityConverter(), jpaFrozenTransactionRepository);
-        this.jpaFrozenTransactionRepository = jpaFrozenTransactionRepository;
+    public FrozenFlowRepositoryImpl(JpaFrozenFlowRepository jpaFrozenFlowRepository) {
+        super(new FrozenTransactionEntityConverter(), jpaFrozenFlowRepository);
+        this.jpaFrozenFlowRepository = jpaFrozenFlowRepository;
     }
 
     @Override
@@ -30,18 +30,18 @@ public class FrozenFlowRepositoryImpl extends CrudRepositoryImpl<FrozenFlow, Fro
 
     @Override
     public FrozenFlow findById(FrozenFlowId id) {
-        JpaFrozenFlow transaction = jpaFrozenTransactionRepository.findByFlowId(id.rawId());
+        JpaFrozenFlow transaction = jpaFrozenFlowRepository.findByFlowId(id.rawId());
         return convertToDomain(transaction);
     }
 
     @Override
     public boolean existsById(FrozenFlowId id) {
-        return jpaFrozenTransactionRepository.existsByFlowId(id.rawId());
+        return jpaFrozenFlowRepository.existsByFlowId(id.rawId());
     }
 
     @Override
     public FrozenFlow findByIdemKey(String idemKey) {
-        JpaFrozenFlow transaction = jpaFrozenTransactionRepository.findByIdemKey(idemKey);
+        JpaFrozenFlow transaction = jpaFrozenFlowRepository.findByIdemKey(idemKey);
         return convertToDomain(transaction);
     }
 

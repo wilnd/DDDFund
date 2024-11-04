@@ -6,19 +6,19 @@ import com.finpoints.bss.fund.domain.model.wallet.WalletFlowId;
 import com.finpoints.bss.fund.domain.model.wallet.WalletFlowRepository;
 import com.finpoints.bss.fund.jpa.CrudRepositoryImpl;
 import com.finpoints.bss.fund.jpa.JpaEntityConverter;
-import com.finpoints.bss.fund.jpa.wallet.JpaWalletTransaction;
-import com.finpoints.bss.fund.jpa.wallet.JpaWalletTransactionRepository;
+import com.finpoints.bss.fund.jpa.wallet.JpaWalletFlow;
+import com.finpoints.bss.fund.jpa.wallet.JpaWalletFlowRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class WalletFlowRepositoryImpl extends CrudRepositoryImpl<WalletFlow, WalletFlowId, JpaWalletTransaction, Long>
+public class WalletFlowRepositoryImpl extends CrudRepositoryImpl<WalletFlow, WalletFlowId, JpaWalletFlow, Long>
         implements WalletFlowRepository {
 
-    private final JpaWalletTransactionRepository jpaWalletTransactionRepository;
+    private final JpaWalletFlowRepository jpaWalletFlowRepository;
 
-    public WalletFlowRepositoryImpl(JpaWalletTransactionRepository jpaWalletTransactionRepository) {
-        super(new JpaWalletTransactionEntityConverter(), jpaWalletTransactionRepository);
-        this.jpaWalletTransactionRepository = jpaWalletTransactionRepository;
+    public WalletFlowRepositoryImpl(JpaWalletFlowRepository jpaWalletFlowRepository) {
+        super(new JpaWalletTransactionEntityConverter(), jpaWalletFlowRepository);
+        this.jpaWalletFlowRepository = jpaWalletFlowRepository;
     }
 
     @Override
@@ -37,15 +37,15 @@ public class WalletFlowRepositoryImpl extends CrudRepositoryImpl<WalletFlow, Wal
     }
 
 
-    public static class JpaWalletTransactionEntityConverter implements JpaEntityConverter<WalletFlow, JpaWalletTransaction> {
+    public static class JpaWalletTransactionEntityConverter implements JpaEntityConverter<WalletFlow, JpaWalletFlow> {
 
         @Override
-        public WalletFlow toDomainEntity(JpaWalletTransaction persistenceEntity) {
+        public WalletFlow toDomainEntity(JpaWalletFlow persistenceEntity) {
             return null;
         }
 
         @Override
-        public JpaWalletTransaction toPersistenceEntity(WalletFlow domainEntity) {
+        public JpaWalletFlow toPersistenceEntity(WalletFlow domainEntity) {
             return null;
         }
     }
