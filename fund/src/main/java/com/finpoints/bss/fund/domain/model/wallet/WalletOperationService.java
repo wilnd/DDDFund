@@ -24,8 +24,8 @@ public interface WalletOperationService {
      * @param amount   冻结金额
      * @param idemKey  幂等key，由业务决定
      */
-    FrozenTransactionId freezeWalletAmount(WalletId walletId, FrozenType freezeType,
-                                           BigDecimal amount, String idemKey, String remark);
+    FrozenFlowId freezeWalletAmount(WalletId walletId, FrozenType freezeType,
+                                    BigDecimal amount, String idemKey, String remark);
 
 
     /**
@@ -36,7 +36,7 @@ public interface WalletOperationService {
      * @param amount       解冻金额
      * @param idemKey      幂等key，由业务决定
      */
-    default void unfreezeWalletAmount(WalletId walletId, FrozenTransactionId transactionId, FrozenType unfreezeType,
+    default void unfreezeWalletAmount(WalletId walletId, FrozenFlowId transactionId, FrozenType unfreezeType,
                                       BigDecimal amount, String idemKey, String remark) {
         unfreezeWalletAmount(walletId, transactionId, unfreezeType, amount, null, BigDecimal.ZERO, idemKey, remark);
     }
@@ -51,7 +51,7 @@ public interface WalletOperationService {
      * @param serviceCurrency 服务费币种
      * @param idemKey         幂等key，由业务决定
      */
-    void unfreezeWalletAmount(WalletId walletId, FrozenTransactionId transactionId, FrozenType unfreezeType, BigDecimal amount,
+    void unfreezeWalletAmount(WalletId walletId, FrozenFlowId transactionId, FrozenType unfreezeType, BigDecimal amount,
                               String serviceCurrency, BigDecimal serviceCharge, String idemKey, String remark);
 
     /**

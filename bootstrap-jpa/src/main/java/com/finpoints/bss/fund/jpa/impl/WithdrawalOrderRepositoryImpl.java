@@ -2,7 +2,7 @@ package com.finpoints.bss.fund.jpa.impl;
 
 import com.finpoints.bss.common.domain.model.IdentityGenerator;
 import com.finpoints.bss.fund.domain.model.common.UserId;
-import com.finpoints.bss.fund.domain.model.wallet.FrozenTransactionId;
+import com.finpoints.bss.fund.domain.model.wallet.FrozenFlowId;
 import com.finpoints.bss.fund.domain.model.wallet.WalletId;
 import com.finpoints.bss.fund.domain.model.withdrawal.MTWithdrawalRequestId;
 import com.finpoints.bss.fund.domain.model.withdrawal.WithdrawalOrder;
@@ -67,8 +67,8 @@ public class WithdrawalOrderRepositoryImpl extends CrudRepositoryImpl<Withdrawal
                     persistenceEntity.getStatus(),
                     persistenceEntity.getMtRequestId() == null ? null
                             : new MTWithdrawalRequestId(persistenceEntity.getMtRequestId()),
-                    persistenceEntity.getFrozenTransactionId() == null ? null
-                            : new FrozenTransactionId(persistenceEntity.getFrozenTransactionId())
+                    persistenceEntity.getFrozenFlowId() == null ? null
+                            : new FrozenFlowId(persistenceEntity.getFrozenFlowId())
             );
         }
 
@@ -89,7 +89,7 @@ public class WithdrawalOrderRepositoryImpl extends CrudRepositoryImpl<Withdrawal
                     domainEntity.getAmount(),
                     domainEntity.getStatus(),
                     domainEntity.getMtRequestId() == null ? null : domainEntity.getMtRequestId().rawId(),
-                    domainEntity.getFrozenTransactionId() == null ? null : domainEntity.getFrozenTransactionId().rawId()
+                    domainEntity.getFrozenFlowId() == null ? null : domainEntity.getFrozenFlowId().rawId()
             );
         }
     }

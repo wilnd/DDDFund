@@ -4,7 +4,6 @@ import com.finpoints.bss.fund.domain.model.common.Currency;
 import com.finpoints.bss.fund.domain.model.wallet.WalletType;
 import com.finpoints.bss.fund.domain.model.withdrawal.WithdrawalMethod;
 import com.finpoints.bss.fund.domain.model.withdrawal.WithdrawalOrderStatus;
-import com.finpoints.bss.fund.jpa.JpaEntityBase;
 import com.finpoints.bss.fund.jpa.JpaVersionalEntityBase;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -70,7 +69,7 @@ public class JpaWithdrawalOrder extends JpaVersionalEntityBase {
 
     @Comment("冻结流水ID")
     @Column(length = 64)
-    private String frozenTransactionId;
+    private String frozenFlowId;
 
     protected JpaWithdrawalOrder() {
     }

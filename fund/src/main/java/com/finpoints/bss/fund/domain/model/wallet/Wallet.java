@@ -84,7 +84,7 @@ public class Wallet extends AggregateRoot {
      * @param remark  备注
      * @return 冻结流水
      */
-    public FrozenTransaction freeze(FrozenType type, BigDecimal amount, String idemKey, String remark) {
+    public FrozenFlow freeze(FrozenFlowId flowId, FrozenType type, BigDecimal amount, String idemKey, String remark) {
         if (amount == null || amount.compareTo(BigDecimal.ZERO) <= 0) {
             throw new IllegalArgumentException("Amount must be greater than 0");
         }
@@ -96,8 +96,8 @@ public class Wallet extends AggregateRoot {
         this.drawableBalance = drawableBalance.subtract(amount);
         this.frozenBalance = frozenBalance.add(amount);
 
-        return new FrozenTransaction(
-                new FrozenTransactionId(IdentityGenerator.nextIdentity()),
+        return new FrozenFlow(
+                flowId,
                 idemKey,
                 this.getWalletId(),
                 this.getUserId(),
@@ -120,7 +120,7 @@ public class Wallet extends AggregateRoot {
      * @param remark      备注
      * @return 冻结流水
      */
-    public FrozenTransaction unfreeze(FrozenType type, FrozenTransaction transaction, String remark) {
+    public FrozenFlow unfreeze(FrozenType type, FrozenFlow transaction, String remark) {
         if (transaction == null || transaction.getAmount().compareTo(BigDecimal.ZERO) <= 0) {
             throw new IllegalArgumentException("Amount must be greater than 0");
         }
@@ -145,7 +145,7 @@ public class Wallet extends AggregateRoot {
      * @param amount 增加金额
      * @return 增加后的冻结金额
      */
-    public FrozenTransaction increaseFrozen(BigDecimal amount) {
+    public FrozenFlow increaseFrozen(BigDecimal amount) {
         if (amount == null || amount.compareTo(BigDecimal.ZERO) <= 0) {
             throw new IllegalArgumentException("Amount must be greater than 0");
         }
@@ -166,7 +166,7 @@ public class Wallet extends AggregateRoot {
      * @param amount 扣除金额
      * @return 扣除后的可用金额
      */
-    public FrozenTransaction deductFrozen(BigDecimal amount) {
+    public FrozenFlow deductFrozen(BigDecimal amount) {
         if (amount == null || amount.compareTo(BigDecimal.ZERO) <= 0) {
             throw new IllegalArgumentException("Amount must be greater than 0");
         }
@@ -190,7 +190,7 @@ public class Wallet extends AggregateRoot {
      * @param amount 增加金额
      * @return 增加后的可用金额
      */
-    public WalletTransaction increase(BigDecimal amount) {
+    public WalletFlow increase(BigDecimal amount) {
         if (amount == null || amount.compareTo(BigDecimal.ZERO) <= 0) {
             throw new IllegalArgumentException("Amount must be greater than 0");
         }
@@ -213,7 +213,7 @@ public class Wallet extends AggregateRoot {
      * @param amount 提现金额
      * @return 提现后的可用金额
      */
-    public WalletTransaction deduct(BigDecimal amount) {
+    public WalletFlow deduct(BigDecimal amount) {
         if (amount == null || amount.compareTo(BigDecimal.ZERO) <= 0) {
             throw new IllegalArgumentException("Amount must be greater than 0");
         }

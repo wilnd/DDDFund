@@ -2,58 +2,58 @@ package com.finpoints.bss.fund.jpa.impl;
 
 import com.finpoints.bss.common.domain.model.IdentityGenerator;
 import com.finpoints.bss.fund.domain.model.common.UserId;
-import com.finpoints.bss.fund.domain.model.wallet.FrozenTransaction;
-import com.finpoints.bss.fund.domain.model.wallet.FrozenTransactionId;
-import com.finpoints.bss.fund.domain.model.wallet.FrozenTransactionRepository;
+import com.finpoints.bss.fund.domain.model.wallet.FrozenFlow;
+import com.finpoints.bss.fund.domain.model.wallet.FrozenFlowId;
+import com.finpoints.bss.fund.domain.model.wallet.FrozenFlowRepository;
 import com.finpoints.bss.fund.domain.model.wallet.WalletId;
 import com.finpoints.bss.fund.jpa.CrudRepositoryImpl;
 import com.finpoints.bss.fund.jpa.JpaEntityConverter;
-import com.finpoints.bss.fund.jpa.wallet.JpaFrozenTransaction;
+import com.finpoints.bss.fund.jpa.wallet.JpaFrozenFlow;
 import com.finpoints.bss.fund.jpa.wallet.JpaFrozenTransactionRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class FrozenTransactionRepositoryImpl extends CrudRepositoryImpl<FrozenTransaction, FrozenTransactionId, JpaFrozenTransaction, Long>
-        implements FrozenTransactionRepository {
+public class FrozenFlowRepositoryImpl extends CrudRepositoryImpl<FrozenFlow, FrozenFlowId, JpaFrozenFlow, Long>
+        implements FrozenFlowRepository {
 
     private final JpaFrozenTransactionRepository jpaFrozenTransactionRepository;
 
-    public FrozenTransactionRepositoryImpl(JpaFrozenTransactionRepository jpaFrozenTransactionRepository) {
+    public FrozenFlowRepositoryImpl(JpaFrozenTransactionRepository jpaFrozenTransactionRepository) {
         super(new FrozenTransactionEntityConverter(), jpaFrozenTransactionRepository);
         this.jpaFrozenTransactionRepository = jpaFrozenTransactionRepository;
     }
 
     @Override
-    public FrozenTransactionId nextId() {
-        return new FrozenTransactionId(IdentityGenerator.nextIdentity());
+    public FrozenFlowId nextId() {
+        return new FrozenFlowId(IdentityGenerator.nextIdentity());
     }
 
     @Override
-    public FrozenTransaction findById(FrozenTransactionId id) {
-        JpaFrozenTransaction transaction = jpaFrozenTransactionRepository.findByTransactionId(id.rawId());
+    public FrozenFlow findById(FrozenFlowId id) {
+        JpaFrozenFlow transaction = jpaFrozenTransactionRepository.findByFlowId(id.rawId());
         return convertToDomain(transaction);
     }
 
     @Override
-    public boolean existsById(FrozenTransactionId id) {
-        return jpaFrozenTransactionRepository.existsByTransactionId(id.rawId());
+    public boolean existsById(FrozenFlowId id) {
+        return jpaFrozenTransactionRepository.existsByFlowId(id.rawId());
     }
 
     @Override
-    public FrozenTransaction findByIdemKey(String idemKey) {
-        JpaFrozenTransaction transaction = jpaFrozenTransactionRepository.findByIdemKey(idemKey);
+    public FrozenFlow findByIdemKey(String idemKey) {
+        JpaFrozenFlow transaction = jpaFrozenTransactionRepository.findByIdemKey(idemKey);
         return convertToDomain(transaction);
     }
 
-    public static class FrozenTransactionEntityConverter implements JpaEntityConverter<FrozenTransaction, JpaFrozenTransaction> {
+    public static class FrozenTransactionEntityConverter implements JpaEntityConverter<FrozenFlow, JpaFrozenFlow> {
 
         @Override
-        public FrozenTransaction toDomainEntity(JpaFrozenTransaction persistenceEntity) {
+        public FrozenFlow toDomainEntity(JpaFrozenFlow persistenceEntity) {
             if (persistenceEntity == null) {
                 return null;
             }
-            return new FrozenTransaction(
-                    new FrozenTransactionId(persistenceEntity.getTransactionId()),
+            return new FrozenFlow(
+                    new FrozenFlowId(persistenceEntity.getFlowId()),
                     persistenceEntity.getIdemKey(),
                     new WalletId(persistenceEntity.getWalletId()),
                     new UserId(persistenceEntity.getUserId()),
@@ -67,12 +67,12 @@ public class FrozenTransactionRepositoryImpl extends CrudRepositoryImpl<FrozenTr
         }
 
         @Override
-        public JpaFrozenTransaction toPersistenceEntity(FrozenTransaction domainEntity) {
+        public JpaFrozenFlow toPersistenceEntity(FrozenFlow domainEntity) {
             if (domainEntity == null) {
                 return null;
             }
-            return new JpaFrozenTransaction(
-                    domainEntity.getTransactionId().rawId(),
+            return new JpaFrozenFlow(
+                    domainEntity.getFlowId().rawId(),
                     domainEntity.getIdemKey(),
                     domainEntity.getWalletId().rawId(),
                     domainEntity.getUserId().rawId(),

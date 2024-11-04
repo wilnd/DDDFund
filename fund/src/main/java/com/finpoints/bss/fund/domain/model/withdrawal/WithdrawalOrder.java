@@ -73,7 +73,7 @@ public class WithdrawalOrder extends AggregateRoot {
     /**
      * 冻结流水ID
      */
-    private FrozenTransactionId frozenTransactionId;
+    private FrozenFlowId frozenFlowId;
 
     /**
      * 创建出金订单
@@ -102,7 +102,7 @@ public class WithdrawalOrder extends AggregateRoot {
         Validate.isTrue(this.status == WithdrawalOrderStatus.CREATED, "Expected status is CREATED");
 
         // 冻结出金金额
-        this.frozenTransactionId = walletOperationService.freezeWalletAmount(
+        this.frozenFlowId = walletOperationService.freezeWalletAmount(
                 this.getWalletId(),
                 FrozenType.Withdrawal, amount,
                 generateIdemKey("submitWithdrawal"),
@@ -130,7 +130,7 @@ public class WithdrawalOrder extends AggregateRoot {
 
         // 解冻出金金额
         walletOperationService.unfreezeWalletAmount(
-                walletId, frozenTransactionId,
+                walletId, frozenFlowId,
                 FrozenType.WithdrawalCancel, amount,
                 generateIdemKey("cancelWithdrawal"),
                 "");

@@ -10,12 +10,12 @@ import java.math.BigDecimal;
 
 @Getter
 @AllArgsConstructor
-public class FrozenTransaction extends Entity {
+public class FrozenFlow extends Entity {
 
     /**
      * 冻结流水ID
      */
-    private final FrozenTransactionId transactionId;
+    private final FrozenFlowId flowId;
 
     /**
      * 幂等Key
@@ -62,9 +62,9 @@ public class FrozenTransaction extends Entity {
      */
     private FrozenType unfreezeType;
 
-    public FrozenTransaction(FrozenTransactionId transactionId, String idemKey, WalletId walletId, UserId userId, Currency currency,
-                             FrozenType freezeType, BigDecimal amount, String remark) {
-        this.transactionId = transactionId;
+    public FrozenFlow(FrozenFlowId flowId, String idemKey, WalletId walletId, UserId userId, Currency currency,
+                      FrozenType freezeType, BigDecimal amount, String remark) {
+        this.flowId = flowId;
         this.idemKey = idemKey;
         this.walletId = walletId;
         this.userId = userId;

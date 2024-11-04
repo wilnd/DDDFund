@@ -4,11 +4,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface JpaFrozenTransactionRepository extends JpaRepository<JpaFrozenTransaction, Long> {
+public interface JpaFrozenTransactionRepository extends JpaRepository<JpaFrozenFlow, Long> {
 
-    JpaFrozenTransaction findByTransactionId(String transactionId);
+    JpaFrozenFlow findByFlowId(String flowId);
 
-    JpaFrozenTransaction findByIdemKey(String idemKey);
+    JpaFrozenFlow findByIdemKey(String idemKey);
 
-    boolean existsByTransactionId(String transactionId);
+    boolean existsByFlowId(String flowId);
 }

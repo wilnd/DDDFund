@@ -15,11 +15,11 @@ import java.math.BigDecimal;
 @Entity
 @Table(name = "frozen_transaction")
 @AllArgsConstructor
-public class JpaFrozenTransaction extends JpaEntityBase {
+public class JpaFrozenFlow extends JpaEntityBase {
 
     @Comment("冻结流水ID")
     @Column(length = 64, unique = true)
-    private String transactionId;
+    private String flowId;
 
     @Comment("幂等Key")
     @Column(length = 128, unique = true)
@@ -57,7 +57,7 @@ public class JpaFrozenTransaction extends JpaEntityBase {
     @Enumerated(EnumType.STRING)
     private FrozenType unfreezeType;
 
-    protected JpaFrozenTransaction() {
+    protected JpaFrozenFlow() {
 
     }
 }

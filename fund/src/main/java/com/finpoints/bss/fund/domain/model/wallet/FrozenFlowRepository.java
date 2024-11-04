@@ -2,7 +2,7 @@ package com.finpoints.bss.fund.domain.model.wallet;
 
 import com.finpoints.bss.common.domain.model.CrudRepository;
 
-public interface FrozenTransactionRepository extends CrudRepository<FrozenTransaction, FrozenTransactionId> {
+public interface FrozenFlowRepository extends CrudRepository<FrozenFlow, FrozenFlowId> {
 
     /**
      * 幂等key获取冻结交易
@@ -10,6 +10,6 @@ public interface FrozenTransactionRepository extends CrudRepository<FrozenTransa
      * @param idemKey 幂等key
      * @return 冻结交易
      */
-    FrozenTransaction findByIdemKey(String idemKey);
+    FrozenFlow findByIdemKey(String idemKey);
 
 }
