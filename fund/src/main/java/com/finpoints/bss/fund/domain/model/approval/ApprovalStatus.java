@@ -7,4 +7,6 @@ public enum ApprovalStatus {
     Approved,
 
     Rejected,
+
+    Cancelled
 }

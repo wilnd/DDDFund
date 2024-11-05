@@ -32,13 +32,19 @@ public class ApprovalOrderApproved extends DomainEvent {
      */
     private final ApprovalStatus status;
 
+    /**
+     * 备注
+     */
+    private final String remark;
+
     public ApprovalOrderApproved(ApprovalOrderId approvalOrderId, ApprovalType type, ApprovalRole role,
-                                 String orderNo, ApprovalStatus status) {
+                                 String orderNo, ApprovalStatus status, String remark) {
         this.approvalOrderId = approvalOrderId;
         this.type = type;
         this.role = role;
         this.orderNo = orderNo;
         this.status = status;
+        this.remark = remark;
     }
 
     @Override

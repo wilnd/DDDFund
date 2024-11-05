@@ -5,6 +5,8 @@ import com.finpoints.bss.fund.domain.model.approval.ApprovalType;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface JpaApprovalOrderRepository extends JpaRepository<JpaApprovalOrder, Long> {
 
@@ -13,4 +15,6 @@ public interface JpaApprovalOrderRepository extends JpaRepository<JpaApprovalOrd
     JpaApprovalOrder findByOrderId(String approvalId);
 
     JpaApprovalOrder findByTypeAndRoleAndBusinessOrderNo(ApprovalType type, ApprovalRole role, String businessOrderNo);
+    
+    List<JpaApprovalOrder> findByTypeAndBusinessOrderNo(ApprovalType type, String businessOrderNo);
 }

@@ -31,5 +31,15 @@ public class ExchangeRate extends ValueObject {
         this.sellRate = sellRate;
     }
 
+    public BigDecimal calculateBuyAmount(BigDecimal amount) {
+        return amount.multiply(buyRate);
+    }
 
+    public BigDecimal calculateSellAmount(BigDecimal amount) {
+        return amount.multiply(sellRate);
+    }
+
+    public BigDecimal calculateMiddleAmount(BigDecimal amount) {
+        return amount.multiply(middleRate);
+    }
 }

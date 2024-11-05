@@ -1,10 +1,11 @@
 package com.finpoints.bss.fund.jpa.impl;
 
 import com.finpoints.bss.common.domain.model.IdentityGenerator;
+import com.finpoints.bss.fund.domain.model.common.BankId;
 import com.finpoints.bss.fund.domain.model.common.UserId;
+import com.finpoints.bss.fund.domain.model.mt.MtRequestId;
 import com.finpoints.bss.fund.domain.model.wallet.FrozenFlowId;
 import com.finpoints.bss.fund.domain.model.wallet.WalletId;
-import com.finpoints.bss.fund.domain.model.withdrawal.MTWithdrawalRequestId;
 import com.finpoints.bss.fund.domain.model.withdrawal.WithdrawalOrder;
 import com.finpoints.bss.fund.domain.model.withdrawal.WithdrawalOrderNo;
 import com.finpoints.bss.fund.domain.model.withdrawal.WithdrawalOrderRepository;
@@ -15,7 +16,7 @@ import com.finpoints.bss.fund.jpa.withdrawal.JpaWithdrawalOrderRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class WithdrawalOrderRepositoryImpl extends CrudRepositoryImpl<WithdrawalOrder, WithdrawalOrderNo, JpaWithdrawalOrder, Long>
+public class WithdrawalOrderRepositoryImpl extends CrudRepositoryImpl<WithdrawalOrder, WithdrawalOrderNo, JpaWithdrawalOrder>
         implements WithdrawalOrderRepository {
 
     private final JpaWithdrawalOrderRepository jpaWithdrawalOrderRepository;
@@ -60,15 +61,23 @@ public class WithdrawalOrderRepositoryImpl extends CrudRepositoryImpl<Withdrawal
                     new WalletId(persistenceEntity.getWalletId()),
                     persistenceEntity.getWalletType(),
                     persistenceEntity.getWithdrawalMethod(),
+                    persistenceEntity.getRequestTime(),
                     persistenceEntity.getExchangeRate(),
                     persistenceEntity.getOriginalCurrency(),
                     persistenceEntity.getTargetCurrency(),
                     persistenceEntity.getAmount(),
+                    persistenceEntity.getArrivalAmount(),
+                    persistenceEntity.getServiceCharge(),
+                    persistenceEntity.getBankId() == null ? null : new BankId(persistenceEntity.getBankId()),
+                    persistenceEntity.getBankAccount(),
+                    persistenceEntity.getBankInfo(),
+                    persistenceEntity.getIntermediaryBankId() == null ? null : new BankId(persistenceEntity.getIntermediaryBankId()),
+                    persistenceEntity.getIntermediaryBankAccount(),
+                    persistenceEntity.getIntermediaryBankInfo(),
                     persistenceEntity.getStatus(),
-                    persistenceEntity.getMtRequestId() == null ? null
-                            : new MTWithdrawalRequestId(persistenceEntity.getMtRequestId()),
-                    persistenceEntity.getFrozenFlowId() == null ? null
-                            : new FrozenFlowId(persistenceEntity.getFrozenFlowId())
+                    persistenceEntity.getMtRequestId() == null ? null : new MtRequestId(persistenceEntity.getMtRequestId()),
+                    persistenceEntity.getFrozenFlowId() == null ? null : new FrozenFlowId(persistenceEntity.getFrozenFlowId()),
+                    persistenceEntity.getRecallTime()
             );
         }
 
@@ -83,13 +92,23 @@ public class WithdrawalOrderRepositoryImpl extends CrudRepositoryImpl<Withdrawal
                     domainEntity.getWalletId().rawId(),
                     domainEntity.getWalletType(),
                     domainEntity.getWithdrawalMethod(),
+                    domainEntity.getRequestTime(),
                     domainEntity.getExchangeRate(),
                     domainEntity.getOriginalCurrency(),
                     domainEntity.getTargetCurrency(),
                     domainEntity.getAmount(),
+                    domainEntity.getArrivalAmount(),
+                    domainEntity.getServiceCharge(),
+                    domainEntity.getBankId() == null ? null : domainEntity.getBankId().rawId(),
+                    domainEntity.getBankAccount(),
+                    domainEntity.getBankInfo(),
+                    domainEntity.getIntermediaryBankId() == null ? null : domainEntity.getIntermediaryBankId().rawId(),
+                    domainEntity.getIntermediaryBankAccount(),
+                    domainEntity.getIntermediaryBankInfo(),
                     domainEntity.getStatus(),
                     domainEntity.getMtRequestId() == null ? null : domainEntity.getMtRequestId().rawId(),
-                    domainEntity.getFrozenFlowId() == null ? null : domainEntity.getFrozenFlowId().rawId()
+                    domainEntity.getFrozenFlowId() == null ? null : domainEntity.getFrozenFlowId().rawId(),
+                    domainEntity.getRecallTime()
             );
         }
     }

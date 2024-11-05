@@ -3,29 +3,35 @@ package com.finpoints.bss.common.domain.model;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 @Getter
-public abstract class Entity extends IdentifiedDomainObject {
+public abstract class Entity implements IdentifiedDomainObject {
 
+    private String delegateId;
     private String appId;
 
     @Setter
     private Integer version;
-    private LocalDateTime createdTime;
-    private LocalDateTime updatedTime;
+    private Instant createdTime;
+    private Instant updatedTime;
 
     protected Entity() {
-        this.createdTime = LocalDateTime.now();
-        this.updatedTime = LocalDateTime.now();
+        this.createdTime = Instant.now();
+        this.updatedTime = Instant.now();
     }
 
-    public void setAppId(Long delegateId, String appId) {
-        super.setId(delegateId);
+    @Override
+    public String delegateId() {
+        return delegateId;
+    }
+
+    public void setAppId(String delegateId, String appId) {
+        this.delegateId = delegateId;
         this.setAppId(appId);
     }
 
-    public void setTime(LocalDateTime createdTime, LocalDateTime updatedTime) {
+    public void setTime(Instant createdTime, Instant updatedTime) {
         this.setCreatedTime(createdTime);
         this.setUpdatedTime(updatedTime);
     }
@@ -34,11 +40,11 @@ public abstract class Entity extends IdentifiedDomainObject {
         this.appId = appId;
     }
 
-    private void setCreatedTime(LocalDateTime createdTime) {
+    private void setCreatedTime(Instant createdTime) {
         this.createdTime = createdTime;
     }
 
-    private void setUpdatedTime(LocalDateTime updatedTime) {
+    private void setUpdatedTime(Instant updatedTime) {
         this.updatedTime = updatedTime;
     }
 }

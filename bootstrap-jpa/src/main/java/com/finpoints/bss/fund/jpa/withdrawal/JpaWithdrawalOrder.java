@@ -1,5 +1,6 @@
 package com.finpoints.bss.fund.jpa.withdrawal;
 
+import com.finpoints.bss.fund.domain.model.common.BankInfo;
 import com.finpoints.bss.fund.domain.model.common.Currency;
 import com.finpoints.bss.fund.domain.model.wallet.WalletType;
 import com.finpoints.bss.fund.domain.model.withdrawal.WithdrawalMethod;
@@ -11,6 +12,7 @@ import lombok.Getter;
 import org.hibernate.annotations.Comment;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 
 @Getter
 @Entity
@@ -38,6 +40,9 @@ public class JpaWithdrawalOrder extends JpaVersionalEntityBase {
     @Enumerated(EnumType.STRING)
     private WithdrawalMethod withdrawalMethod;
 
+    @Comment("请求时间")
+    private Instant requestTime;
+
     @Comment("汇率")
     @Column(precision = 20, scale = 10)
     private BigDecimal exchangeRate;
@@ -56,20 +61,52 @@ public class JpaWithdrawalOrder extends JpaVersionalEntityBase {
     @Column(precision = 20, scale = 10)
     private BigDecimal amount;
 
+    @Comment("到账金额")
+    @Column(precision = 20, scale = 10)
+    private BigDecimal arrivalAmount;
+
+    @Comment("服务费")
+    @Column(precision = 20, scale = 10)
+    private BigDecimal serviceCharge;
+
+    @Comment("(银行出金)银行ID")
+    @Column(length = 64)
+    private String bankId;
+
+    @Comment("(银行出金)银行账号")
+    @Column(length = 32)
+    private String bankAccount;
+
+    // (银行出金)银行信息
+    @Embedded
+    private BankInfo bankInfo;
+
+    @Comment("(国际电汇)中转银行ID")
+    @Column(length = 64)
+    private String intermediaryBankId;
+
+    @Comment("(国际电汇)中转银行账号")
+    @Column(length = 32)
+    private String intermediaryBankAccount;
+
+    // (国际电汇)中转银行信息
+    @Embedded
+    private BankInfo intermediaryBankInfo;
+
     @Comment("订单状态")
     @Enumerated(EnumType.STRING)
     private WithdrawalOrderStatus status;
-
-    /**
-     * 仅在出金订单为MT出金时有值
-     */
-    @Comment("MT出金请求ID")
+    
+    @Comment("MT出金请求ID，仅在出金订单为MT出金时有值")
     @Column(length = 64)
     private String mtRequestId;
 
     @Comment("冻结流水ID")
     @Column(length = 64)
     private String frozenFlowId;
+
+    @Comment("回撤时间")
+    private Instant recallTime;
 
     protected JpaWithdrawalOrder() {
     }

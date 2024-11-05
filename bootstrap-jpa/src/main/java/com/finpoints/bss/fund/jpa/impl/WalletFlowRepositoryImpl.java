@@ -11,7 +11,7 @@ import com.finpoints.bss.fund.jpa.wallet.JpaWalletFlowRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class WalletFlowRepositoryImpl extends CrudRepositoryImpl<WalletFlow, WalletFlowId, JpaWalletFlow, Long>
+public class WalletFlowRepositoryImpl extends CrudRepositoryImpl<WalletFlow, WalletFlowId, JpaWalletFlow>
         implements WalletFlowRepository {
 
     private final JpaWalletFlowRepository jpaWalletFlowRepository;

@@ -22,5 +22,5 @@ public interface ClientWithdrawalService {
      * @param withdrawalOrderNo 出金订单号
      * @return 出金订单
      */
-    WithdrawalOrder cancelWithdrawal(UserId userId, String withdrawalOrderNo);
+    WithdrawalOrder cancelWithdrawal(String userId, String withdrawalOrderNo);
 }

@@ -2,6 +2,7 @@ package com.finpoints.bss.fund.port.adapter.mock;
 
 import com.finpoints.bss.fund.domain.model.common.Currency;
 import com.finpoints.bss.fund.domain.model.common.UserId;
+import com.finpoints.bss.fund.domain.model.common.UserRole;
 import com.finpoints.bss.fund.domain.model.withdrawal.WithdrawalSettings;
 import com.finpoints.bss.fund.domain.model.withdrawal.WithdrawalSettingsService;
 import org.springframework.stereotype.Component;
@@ -18,5 +19,10 @@ public class MockWithdrawalSettingServiceImpl implements WithdrawalSettingsServi
                 Currency.USD,
                 new BigDecimal("100")
         );
+    }
+
+    @Override
+    public WithdrawalSettings getRoleSetting(UserRole userRole) {
+        return null;
     }
 }

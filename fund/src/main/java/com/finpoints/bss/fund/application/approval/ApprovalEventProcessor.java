@@ -3,6 +3,7 @@ package com.finpoints.bss.fund.application.approval;
 import com.finpoints.bss.common.domain.model.IdentityGenerator;
 import com.finpoints.bss.common.requester.CurrentRequesterService;
 import com.finpoints.bss.fund.domain.model.approval.*;
+import com.finpoints.bss.fund.domain.model.withdrawal.WithdrawalOrderCancelled;
 import com.finpoints.bss.fund.domain.model.withdrawal.WithdrawalOrderSubmitted;
 import com.finpoints.bss.fund.domain.model.withdrawal.WithdrawalSettings;
 import com.finpoints.bss.fund.domain.model.withdrawal.WithdrawalSettingsService;
@@ -10,6 +11,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.BooleanUtils;
 import org.springframework.modulith.events.ApplicationModuleListener;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 @Slf4j
 @Component
@@ -27,6 +30,9 @@ public class ApprovalEventProcessor {
         this.withdrawalSettingsService = withdrawalSettingsService;
     }
 
+    /**
+     * 处理出金订单提交事件
+     */
     @ApplicationModuleListener
     public void processWithdrawalSubmitted(WithdrawalOrderSubmitted event) {
         // 幂等性检查
@@ -48,13 +54,34 @@ public class ApprovalEventProcessor {
         // 自动审核
         WithdrawalSettings settings = withdrawalSettingsService.getUserSetting(event.getUserId());
         if (BooleanUtils.isTrue(settings.getAutoApproval())) {
-            approvalOrder.approve(requesterService);
+            approvalOrder.approve(requesterService, "Auto approved");
             log.info("Auto approved withdrawal order {}, approval {}",
                     event.getWithdrawalOrderNo(), approvalOrder.getOrderId());
         }
         approvalRepository.save(approvalOrder);
     }
 
+    /**
+     * 处理出金订单取消事件
+     */
+    @ApplicationModuleListener(condition = "#event.status.name() == 'CANCELLED'")
+    public void processWithdrawalCancelled(WithdrawalOrderCancelled event) {
+        // 取消此订单下所有可取消的审核单
+        List<ApprovalOrder> approvalOrders = approvalRepository.orderApprovals(ApprovalType.Withdrawal,
+                event.getWithdrawalOrderNo().rawId());
+        approvalOrders.forEach(approvalOrder -> {
+            if (approvalOrder.canCancel()) {
+                approvalOrder.cancel();
+                log.info("Approval cancelled for withdrawal order {}, approval {}",
+                        event.getWithdrawalOrderNo(), approvalOrder.getOrderId());
+            }
+        });
+        approvalRepository.saveAll(approvalOrders);
+    }
+
+    /**
+     * 处理出金订单风控审核通过事件
+     */
     @ApplicationModuleListener(condition = "#event.type.name() == 'Withdrawal' and #event.role.name() == 'Risk'")
     public void processWithdrawalRiskApproved(ApprovalOrderApproved event) {
         // 幂等性检查

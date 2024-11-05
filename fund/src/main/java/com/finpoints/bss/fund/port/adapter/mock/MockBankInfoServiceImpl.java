@@ -14,7 +14,6 @@ public class MockBankInfoServiceImpl implements BankInfoService {
     @Override
     public BankCardInfo bankCardInfo(BankCardId bankCardId) {
         return new BankCardInfo(
-                bankCardId,
                 Currency.USD
         );
     }

@@ -7,6 +7,8 @@ import com.finpoints.bss.common.requester.CurrentRequesterService;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+import java.time.Instant;
+
 @Getter
 @AllArgsConstructor
 public class ApprovalOrder extends AggregateRoot {
@@ -37,6 +39,16 @@ public class ApprovalOrder extends AggregateRoot {
     private ApprovalStatus status;
 
     /**
+     * 审核时间
+     */
+    private Instant approvalTime;
+
+    /**
+     * 审核备注
+     */
+    private String remark;
+
+    /**
      * 审核人
      */
     private Operator operator;
@@ -63,7 +75,7 @@ public class ApprovalOrder extends AggregateRoot {
      *
      * @param requesterService 当前请求者服务
      */
-    public void approve(CurrentRequesterService requesterService) {
+    public void approve(CurrentRequesterService requesterService, String remark) {
         if (this.status != ApprovalStatus.Pending) {
             throw new IllegalStateException("Approval status is not pending");
         }
@@ -71,7 +83,9 @@ public class ApprovalOrder extends AggregateRoot {
             throw new IllegalStateException("Current user role could not operate");
         }
 
+        this.remark = remark;
         this.status = ApprovalStatus.Approved;
+        this.approvalTime = Instant.now();
         this.operator = Operator.current();
 
         // 事件发布
@@ -81,17 +95,17 @@ public class ApprovalOrder extends AggregateRoot {
                         this.type,
                         this.role,
                         this.businessOrderNo,
-                        this.status
+                        this.status,
+                        this.remark
                 ));
     }
-
 
     /**
      * 审核拒绝
      *
      * @param requesterService 当前请求者服务
      */
-    public void reject(CurrentRequesterService requesterService) {
+    public void reject(CurrentRequesterService requesterService, String remark) {
         if (this.status != ApprovalStatus.Pending) {
             throw new IllegalStateException("Approval status is not pending");
         }
@@ -99,7 +113,9 @@ public class ApprovalOrder extends AggregateRoot {
             throw new IllegalStateException("Current user role could not operate");
         }
 
+        this.remark = remark;
         this.status = ApprovalStatus.Rejected;
+        this.approvalTime = Instant.now();
         this.operator = Operator.current();
 
         // 事件发布
@@ -109,7 +125,27 @@ public class ApprovalOrder extends AggregateRoot {
                         this.type,
                         this.role,
                         this.businessOrderNo,
-                        this.status
+                        this.status,
+                        this.remark
                 ));
+    }
+
+    /**
+     * 是否可以撤销
+     */
+    public boolean canCancel() {
+        return this.status == ApprovalStatus.Pending;
+    }
+
+    /**
+     * 审核撤销
+     */
+    public void cancel() {
+        if (this.status != ApprovalStatus.Pending) {
+            throw new IllegalStateException("Approval status is not pending");
+        }
+
+        this.status = ApprovalStatus.Cancelled;
+        this.operator = Operator.current();
     }
 }

@@ -11,7 +11,7 @@ import com.finpoints.bss.fund.jpa.event.JpaEventRecordRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class EventRecordRepositoryImpl extends CrudRepositoryImpl<EventRecord, EventRecordId, JpaEventRecord, Long>
+public class EventRecordRepositoryImpl extends CrudRepositoryImpl<EventRecord, EventRecordId, JpaEventRecord>
         implements EventRecordRepository {
 
     private final JpaEventRecordRepository jpaEventRecordRepository;

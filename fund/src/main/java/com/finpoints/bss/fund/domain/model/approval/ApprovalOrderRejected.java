@@ -7,38 +7,21 @@ import lombok.Getter;
 @Getter
 public class ApprovalOrderRejected extends DomainEvent {
 
-    /**
-     * 审核单ID
-     */
     private final ApprovalOrderId approvalOrderId;
-
-    /**
-     * 业务类型
-     */
     private final ApprovalType type;
-
-    /**
-     * 审核角色
-     */
     private final ApprovalRole role;
-
-    /**
-     * 关联业务订单号
-     */
     private final String orderNo;
-
-    /**
-     * 审核状态
-     */
     private final ApprovalStatus status;
+    private final String remark;
 
     public ApprovalOrderRejected(ApprovalOrderId approvalOrderId, ApprovalType type, ApprovalRole role,
-                                 String orderNo, ApprovalStatus status) {
+                                 String orderNo, ApprovalStatus status, String remark) {
         this.approvalOrderId = approvalOrderId;
         this.type = type;
         this.role = role;
         this.orderNo = orderNo;
         this.status = status;
+        this.remark = remark;
     }
 
     @Override

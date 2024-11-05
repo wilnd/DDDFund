@@ -1,5 +1,6 @@
 package com.finpoints.bss.fund.application.withdrawal;
 
+import com.finpoints.bss.common.lock.LockTemplate;
 import com.finpoints.bss.fund.domain.model.approval.ApprovalOrderApproved;
 import com.finpoints.bss.fund.domain.model.approval.ApprovalOrderRejected;
 import com.finpoints.bss.fund.domain.model.wallet.WalletOperationService;
@@ -12,6 +13,7 @@ import org.springframework.modulith.events.ApplicationModuleListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.event.TransactionalEventListener;
+import org.springframework.transaction.support.TransactionTemplate;
 
 import java.util.concurrent.locks.Lock;
 
@@ -19,15 +21,15 @@ import java.util.concurrent.locks.Lock;
 @Component
 public class WithdrawalEventProcessor {
 
-    private final WithdrawalService withdrawalService;
-    private final WithdrawalOrderRepository withdrawalOrderRepository;
+    private final TransactionTemplate transactionTemplate;
 
+    private final WithdrawalOrderRepository withdrawalOrderRepository;
     private final WalletOperationService walletOperationService;
 
-    public WithdrawalEventProcessor(WithdrawalService withdrawalService,
+    public WithdrawalEventProcessor(TransactionTemplate transactionTemplate,
                                     WithdrawalOrderRepository withdrawalOrderRepository,
                                     WalletOperationService walletOperationService) {
-        this.withdrawalService = withdrawalService;
+        this.transactionTemplate = transactionTemplate;
         this.withdrawalOrderRepository = withdrawalOrderRepository;
         this.walletOperationService = walletOperationService;
     }
@@ -67,20 +69,17 @@ public class WithdrawalEventProcessor {
 
         // 加钱包锁
         Lock walletLock = walletOperationService.getWalletLock(order.getWalletId());
-        boolean locked = false;
-        try {
-            // 尝试获取钱包锁
-            locked = walletLock.tryLock();
-            if (!locked) {
-                throw new RuntimeException("Failed to lock wallet");
-            }
+        LockTemplate.execute(walletLock, () -> {
 
-            withdrawalService.innerCancelWithdrawal(order, WithdrawalOrderStatus.REJECTED);
-            log.info("Withdrawal order {} status REJECTED", order.getOrderNo());
-        } finally {
-            if (locked) {
-                walletLock.unlock();
-            }
-        }
+            // 开启事务，更新出金订单状态
+            transactionTemplate.execute(txStatus -> {
+                // 状态更改为审核拒绝
+                order.cancel(WithdrawalOrderStatus.REJECTED, walletOperationService);
+                withdrawalOrderRepository.save(order);
+
+                log.info("Withdrawal order {} status REJECTED", order.getOrderNo());
+                return null;
+            });
+        });
     }
 }

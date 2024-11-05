@@ -8,8 +8,10 @@ import com.finpoints.bss.fund.jpa.approval.JpaApprovalOrder;
 import com.finpoints.bss.fund.jpa.approval.JpaApprovalOrderRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
-public class ApprovalOrderRepositoryImpl extends CrudRepositoryImpl<ApprovalOrder, ApprovalOrderId, JpaApprovalOrder, Long>
+public class ApprovalOrderRepositoryImpl extends CrudRepositoryImpl<ApprovalOrder, ApprovalOrderId, JpaApprovalOrder>
         implements ApprovalOrderRepository {
 
     private final JpaApprovalOrderRepository jpaApprovalOrderRepository;
@@ -41,6 +43,13 @@ public class ApprovalOrderRepositoryImpl extends CrudRepositoryImpl<ApprovalOrde
         return convertToDomain(approval);
     }
 
+    @Override
+    public List<ApprovalOrder> orderApprovals(ApprovalType type, String orderNo) {
+        return jpaApprovalOrderRepository.findByTypeAndBusinessOrderNo(type, orderNo).stream()
+                .map(this::convertToDomain)
+                .toList();
+    }
+
     public static class ApprovalEntityConverter implements JpaEntityConverter<ApprovalOrder, JpaApprovalOrder> {
 
         @Override
@@ -54,6 +63,8 @@ public class ApprovalOrderRepositoryImpl extends CrudRepositoryImpl<ApprovalOrde
                     persistenceEntity.getRole(),
                     persistenceEntity.getBusinessOrderNo(),
                     persistenceEntity.getStatus(),
+                    persistenceEntity.getApprovalTime(),
+                    persistenceEntity.getRemark(),
                     persistenceEntity.getOperator()
             );
         }
@@ -69,6 +80,8 @@ public class ApprovalOrderRepositoryImpl extends CrudRepositoryImpl<ApprovalOrde
                     domainEntity.getRole(),
                     domainEntity.getBusinessOrderNo(),
                     domainEntity.getStatus(),
+                    domainEntity.getApprovalTime(),
+                    domainEntity.getRemark(),
                     domainEntity.getOperator()
             );
         }

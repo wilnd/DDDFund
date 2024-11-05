@@ -30,17 +30,18 @@ public class WithdrawalController {
     public String applyWithdrawal(@RequestBody ApplyWithdrawalRequest request) {
         WithdrawalOrderNo orderNo = withdrawalService.applyWithdrawal(
                 ApplyWithdrawalCommand.builder()
+                        .orderNo(request.getOrderNo())
                         .userId(requesterService.currentUserId())
                         .walletId(request.getWalletId())
                         .walletType(request.getWalletType())
                         .withdrawalMethod(request.getWithdrawalMethod())
+                        .requestTime(request.getRequestTime())
                         .amount(request.getAmount())
                         .remark(request.getRemark())
                         .bankId(request.getBankId())
                         .bankCardId(request.getBankCardId())
-                        .mtAccount(request.getMtAccount())
                         .serverId(request.getServerId())
-                        .orderNo(request.getOrderNo())
+                        .mtAccount(request.getMtAccount())
                         .build());
         return orderNo == null ? null : orderNo.rawId();
     }
@@ -48,7 +49,7 @@ public class WithdrawalController {
     @DeleteMapping("/orders/{orderId}")
     @Operation(summary = "取消出金", description = "取消出金")
     public WithdrawalOrderDTO cancelWithdrawal(@PathVariable String orderId) {
-        WithdrawalOrder order = withdrawalService.cancelWithdrawal(new UserId(requesterService.currentUserId()), orderId);
+        WithdrawalOrder order = withdrawalService.cancelWithdrawal(requesterService.currentUserId(), orderId);
         return WithdrawalOrderDTO.from(order);
     }
 }

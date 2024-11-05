@@ -6,11 +6,9 @@ import lombok.Getter;
 @Getter
 public class BankCardInfo extends ValueObject {
 
-    private final BankCardId bankCardId;
     private final Currency currency;
 
-    public BankCardInfo(BankCardId bankCardId, Currency currency) {
-        this.bankCardId = bankCardId;
+    public BankCardInfo(Currency currency) {
         this.currency = currency;
     }
 }

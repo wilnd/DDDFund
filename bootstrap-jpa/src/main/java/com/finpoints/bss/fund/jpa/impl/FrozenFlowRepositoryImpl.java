@@ -13,7 +13,7 @@ import com.finpoints.bss.fund.jpa.wallet.JpaFrozenFlowRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class FrozenFlowRepositoryImpl extends CrudRepositoryImpl<FrozenFlow, FrozenFlowId, JpaFrozenFlow, Long>
+public class FrozenFlowRepositoryImpl extends CrudRepositoryImpl<FrozenFlow, FrozenFlowId, JpaFrozenFlow>
         implements FrozenFlowRepository {
 
     private final JpaFrozenFlowRepository jpaFrozenFlowRepository;

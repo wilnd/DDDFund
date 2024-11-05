@@ -7,6 +7,8 @@ import com.finpoints.bss.fund.mybatis.entity.OrdersFlow;
 import com.finpoints.bss.fund.mybatis.mapper.OrdersFlowMapper;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public class ApprovalOrderRepositoryImpl extends CrudRepositoryImpl<ApprovalOrder, ApprovalOrderId, OrdersFlow>
         implements ApprovalOrderRepository {
@@ -31,6 +33,11 @@ public class ApprovalOrderRepositoryImpl extends CrudRepositoryImpl<ApprovalOrde
     @Override
     public ApprovalOrder orderApproval(ApprovalType type, ApprovalRole role, String orderNo) {
         return null;
+    }
+
+    @Override
+    public List<ApprovalOrder> orderApprovals(ApprovalType type, String orderNo) {
+        return List.of();
     }
 
     public static class ApprovalEntityConverter implements EntityConverter<ApprovalOrder, OrdersFlow> {

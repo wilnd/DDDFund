@@ -2,14 +2,18 @@ package com.finpoints.bss.fund.domain.model.withdrawal;
 
 import com.finpoints.bss.common.domain.model.AggregateRoot;
 import com.finpoints.bss.common.domain.model.DomainEventPublisher;
+import com.finpoints.bss.fund.domain.model.common.BankId;
+import com.finpoints.bss.fund.domain.model.common.BankInfo;
 import com.finpoints.bss.fund.domain.model.common.Currency;
 import com.finpoints.bss.fund.domain.model.common.UserId;
+import com.finpoints.bss.fund.domain.model.mt.MtRequestId;
 import com.finpoints.bss.fund.domain.model.wallet.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.apache.commons.lang3.Validate;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 
 @Getter
 @AllArgsConstructor
@@ -41,6 +45,11 @@ public class WithdrawalOrder extends AggregateRoot {
     private final WithdrawalMethod withdrawalMethod;
 
     /**
+     * (客户端)请求时间
+     */
+    private final Instant requestTime;
+
+    /**
      * 汇率
      */
     private final BigDecimal exchangeRate;
@@ -61,6 +70,46 @@ public class WithdrawalOrder extends AggregateRoot {
     private BigDecimal amount;
 
     /**
+     * 到账金额
+     */
+    private BigDecimal arrivalAmount;
+
+    /**
+     * 服务费
+     */
+    private BigDecimal serviceCharge;
+
+    /**
+     * (银行出金)银行ID
+     */
+    private BankId bankId;
+
+    /**
+     * (银行出金)银行账号
+     */
+    private String bankAccount;
+
+    /**
+     * (银行出金)银行信息
+     */
+    private BankInfo bankInfo;
+
+    /**
+     * (国际电汇)中转银行ID
+     */
+    private BankId intermediaryBankId;
+
+    /**
+     * (国际电汇)中转银行账号
+     */
+    private String intermediaryBankAccount;
+
+    /**
+     * (国际电汇)中转银行信息
+     */
+    private BankInfo intermediaryBankInfo;
+
+    /**
      * 订单状态
      */
     private WithdrawalOrderStatus status;
@@ -68,7 +117,7 @@ public class WithdrawalOrder extends AggregateRoot {
     /**
      * MT出金请求ID，仅在出金订单为MT出金时有值
      */
-    private final MTWithdrawalRequestId mtRequestId;
+    private MtRequestId mtRequestId;
 
     /**
      * 冻结流水ID
@@ -76,22 +125,62 @@ public class WithdrawalOrder extends AggregateRoot {
     private FrozenFlowId frozenFlowId;
 
     /**
-     * 创建出金订单
+     * 出金回撤时间
      */
-    public WithdrawalOrder(WithdrawalOrderNo orderNo, UserId userId, WalletId walletId, WalletType walletType,
-                           WithdrawalMethod withdrawalMethod, BigDecimal exchangeRate, Currency originalCurrency,
-                           Currency targetCurrency, BigDecimal amount, MTWithdrawalRequestId mtRequestId) {
+    private Instant recallTime;
+
+    WithdrawalOrder(WithdrawalOrderNo orderNo, UserId userId, WalletId walletId, WalletType walletType,
+                    WithdrawalMethod withdrawalMethod, Instant requestTime, BigDecimal exchangeRate,
+                    Currency originalCurrency, Currency targetCurrency, BigDecimal amount, BigDecimal arrivalAmount,
+                    BigDecimal serviceCharge, String bankAccount, BankId bankId, BankInfo bankInfo,
+                    BankId intermediaryBankId, String intermediaryBankAccount, BankInfo intermediaryBankInfo,
+                    MtRequestId mtRequestId) {
         this.orderNo = orderNo;
         this.userId = userId;
         this.walletId = walletId;
         this.walletType = walletType;
         this.withdrawalMethod = withdrawalMethod;
+        this.requestTime = requestTime;
         this.exchangeRate = exchangeRate;
         this.originalCurrency = originalCurrency;
         this.targetCurrency = targetCurrency;
         this.amount = amount;
+        this.arrivalAmount = arrivalAmount;
+        this.serviceCharge = serviceCharge;
+        this.bankAccount = bankAccount;
+        this.bankId = bankId;
+        this.bankInfo = bankInfo;
+        this.intermediaryBankId = intermediaryBankId;
+        this.intermediaryBankAccount = intermediaryBankAccount;
+        this.intermediaryBankInfo = intermediaryBankInfo;
         this.mtRequestId = mtRequestId;
+
         this.status = WithdrawalOrderStatus.CREATED;
+    }
+
+    public static WithdrawalOrder of() {
+        return null;
+    }
+
+    /**
+     * 创建出金订单
+     */
+    public static WithdrawalOrder ofBank(WithdrawalOrderNo orderNo, UserId userId,
+                                         WalletId walletId, WalletType walletType,
+                                         Instant requestTime, BigDecimal exchangeRate,
+                                         Currency originalCurrency, Currency targetCurrency,
+                                         BigDecimal amount, BigDecimal arrivalAmount,
+                                         BankId bankId, String bankAccount, BankInfo bankInfo,
+                                         MtRequestId mtRequestId) {
+        return new WithdrawalOrder(orderNo, userId, walletId, walletType, WithdrawalMethod.Bank,
+                requestTime, exchangeRate, originalCurrency, targetCurrency, amount, arrivalAmount,
+                BigDecimal.ZERO, bankAccount, bankId, bankInfo,
+                null, null, null,
+                mtRequestId);
+    }
+
+    public static WithdrawalOrder ofWire() {
+        return null;
     }
 
     /**
@@ -169,6 +258,8 @@ public class WithdrawalOrder extends AggregateRoot {
      */
     public void recall() {
 
+
+        this.recallTime = Instant.now();
     }
 
     /**

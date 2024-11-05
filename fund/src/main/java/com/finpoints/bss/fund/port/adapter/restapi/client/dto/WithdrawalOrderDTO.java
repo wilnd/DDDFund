@@ -10,6 +10,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.time.LocalDateTime;
 
 @Data
@@ -48,10 +49,10 @@ public class WithdrawalOrderDTO {
     private WithdrawalOrderStatus status;
 
     @Schema(description = "创建时间")
-    private LocalDateTime createdTime;
+    private Instant createdTime;
 
     @Schema(description = "更新时间")
-    private LocalDateTime updatedTime;
+    private Instant updatedTime;
 
     public static WithdrawalOrderDTO from(WithdrawalOrder order) {
         return new WithdrawalOrderDTO(

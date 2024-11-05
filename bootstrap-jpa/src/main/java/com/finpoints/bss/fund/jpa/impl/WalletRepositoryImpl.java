@@ -13,7 +13,7 @@ import com.finpoints.bss.fund.jpa.wallet.JpaWalletRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class WalletRepositoryImpl extends CrudRepositoryImpl<Wallet, WalletId, JpaWallet, Long>
+public class WalletRepositoryImpl extends CrudRepositoryImpl<Wallet, WalletId, JpaWallet>
         implements WalletRepository {
 
     private final JpaWalletRepository jpaWalletRepository;

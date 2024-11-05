@@ -16,61 +16,35 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 public class JpaWallet extends JpaEntityBase {
 
-    /**
-     * 钱包ID
-     */
     @Comment("钱包ID")
     @Column(length = 64, unique = true)
     private String walletId;
 
-    /**
-     * 用户ID
-     */
     @Comment("用户ID")
     @Column(length = 64)
     private String userId;
 
-    /**
-     * 币种
-     */
     @Embedded
     @Comment("币种")
     @AttributeOverride(name = "code", column = @Column(name = "currency", length = 3))
     private Currency currency;
 
-    /**
-     * 钱包类型
-     */
+    @Comment("钱包类型")
     @Enumerated(EnumType.STRING)
     private WalletType type;
 
-    /**
-     * 是否为主钱包，默认否
-     */
     @Column(columnDefinition = "boolean default false comment '是否为主钱包，默认否'")
     private Boolean mainWallet;
 
-    /**
-     * 账户余额
-     */
     @Column(columnDefinition = "decimal(20,8) default 0 comment '账户余额'")
     private BigDecimal balance;
 
-    /**
-     * 冻结余额
-     */
     @Column(columnDefinition = "decimal(20,8) default 0 comment '冻结余额'")
     private BigDecimal frozenBalance;
 
-    /**
-     * 可用余额
-     */
     @Column(columnDefinition = "decimal(20,8) default 0 comment '可用余额'")
     private BigDecimal availableBalance;
 
-    /**
-     * 可提余额
-     */
     @Column(columnDefinition = "decimal(20,8) default 0 comment '可提余额'")
     private BigDecimal drawableBalance;
 

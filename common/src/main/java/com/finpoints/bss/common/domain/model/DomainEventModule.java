@@ -5,6 +5,7 @@ public enum DomainEventModule {
     Deposit,
     Withdrawal,
     Transfer,
+    MT,
 
     Approval,
     Wallet,

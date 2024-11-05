@@ -9,7 +9,6 @@ import lombok.Getter;
 public enum ApprovalType {
 
     Withdrawal("出金"),
-
     Deposit("入金"),
 
     ;

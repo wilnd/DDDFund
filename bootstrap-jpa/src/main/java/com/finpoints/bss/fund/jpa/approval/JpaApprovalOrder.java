@@ -10,46 +10,40 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.hibernate.annotations.Comment;
 
+import java.time.Instant;
+
 @Getter
 @Entity
 @Table(name = "approval")
 @AllArgsConstructor
 public class JpaApprovalOrder extends JpaVersionalEntityBase {
 
-    /**
-     * 审核单ID
-     */
-    @Comment("钱包ID")
+    @Comment("审核单ID")
     @Column(length = 64, unique = true)
     private String orderId;
 
-    /**
-     * 业务类型
-     */
+    @Comment("业务类型")
     @Enumerated(EnumType.STRING)
     private ApprovalType type;
 
-    /**
-     * 审核角色
-     */
+    @Comment("审核角色")
     @Enumerated(EnumType.STRING)
     private ApprovalRole role;
 
-    /**
-     * 关联业务订单号
-     */
+    @Comment("业务单号")
     @Column(length = 64)
     private String businessOrderNo;
 
-    /**
-     * 审核状态
-     */
+    @Comment("审核状态")
     @Enumerated(EnumType.STRING)
     private ApprovalStatus status;
 
-    /**
-     * 审核人
-     */
+    @Comment("审核时间")
+    private Instant approvalTime;
+
+    @Comment("审核备注")
+    private String remark;
+    
     @Embedded
     private Operator operator;
 

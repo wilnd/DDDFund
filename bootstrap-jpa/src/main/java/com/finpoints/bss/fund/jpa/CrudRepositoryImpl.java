@@ -7,14 +7,14 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public abstract class CrudRepositoryImpl<DE extends Entity, DID extends Identity, PE extends JpaEntityBase, PID>
+public abstract class CrudRepositoryImpl<DE extends Entity, DID extends Identity, PE extends JpaEntityBase>
         implements CrudRepository<DE, DID> {
 
     private final JpaEntityConverter<DE, PE> entityConverter;
-    protected final JpaRepository<PE, PID> jpaRepository;
+    protected final JpaRepository<PE, Long> jpaRepository;
 
     public CrudRepositoryImpl(JpaEntityConverter<DE, PE> entityConverter,
-                              JpaRepository<PE, PID> jpaRepository) {
+                              JpaRepository<PE, Long> jpaRepository) {
         this.entityConverter = entityConverter;
         this.jpaRepository = jpaRepository;
     }

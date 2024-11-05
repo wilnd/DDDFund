@@ -10,6 +10,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 
 @Data
 public class ApplyWithdrawalRequest {
@@ -26,6 +27,10 @@ public class ApplyWithdrawalRequest {
     @JsonAlias("type")
     @NotNull(message = "出金方式不能为空")
     private WithdrawalMethod withdrawalMethod;
+
+    @Schema(description = "请求时间", example = "2021-09-01T00:00:00Z")
+    @NotNull(message = "请求时间不能为空")
+    private Instant requestTime;
 
     @Schema(description = "出金金额", example = "100")
     @NotNull(message = "出金金额不能为空")

@@ -23,14 +23,14 @@ public class ApprovalService {
     }
 
     @Transactional
-    public ApprovalOrder approval(String anApprovalId) {
+    public ApprovalOrder approve(String anApprovalId, String remark) {
         ApprovalOrderId approvalOrderId = new ApprovalOrderId(anApprovalId);
         ApprovalOrder approvalOrder = approvalRepository.findById(approvalOrderId);
         if (approvalOrder == null) {
             throw new IllegalArgumentException("Approval not found");
         }
 
-        approvalOrder.approve(requesterService);
+        approvalOrder.approve(requesterService, remark);
         log.info("Approval approved: {}, operator: {}", approvalOrderId, approvalOrder.getOperator());
 
         return approvalRepository.save(approvalOrder);
@@ -38,14 +38,14 @@ public class ApprovalService {
 
 
     @Transactional
-    public ApprovalOrder reject(String anApprovalId) {
+    public ApprovalOrder reject(String anApprovalId, String remark) {
         ApprovalOrderId approvalOrderId = new ApprovalOrderId(anApprovalId);
         ApprovalOrder approvalOrder = approvalRepository.findById(approvalOrderId);
         if (approvalOrder == null) {
             throw new IllegalArgumentException("Approval not found");
         }
 
-        approvalOrder.reject(requesterService);
+        approvalOrder.reject(requesterService, remark);
         log.info("Approval rejected: {}, operator: {}", approvalOrderId, approvalOrder.getOperator());
 
         return approvalRepository.save(approvalOrder);

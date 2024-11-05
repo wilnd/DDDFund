@@ -120,7 +120,15 @@ public class ComponentPathEventSerializer implements EventSerializer {
                 throw new RuntimeException(e);
             }
 
-            if (fieldData instanceof AbstractId abstractId) {
+            if (fieldData instanceof String str) {
+                root.put(prefix + declaredField.getName(), str);
+            } else if (fieldData instanceof Number num) {
+                root.put(prefix + declaredField.getName(), num.toString());
+            } else if (fieldData instanceof Boolean bool) {
+                root.put(prefix + declaredField.getName(), bool);
+            } else if (fieldData instanceof Enum<?> enumValue) {
+                root.put(prefix + declaredField.getName(), enumValue.name());
+            } else if (fieldData instanceof AbstractId abstractId) {
                 root.put(prefix + declaredField.getName(), abstractId.rawId());
             } else if (fieldData instanceof ValueObject) {
                 serializeObject(root, prefix + declaredField.getName() + "_", fieldData);

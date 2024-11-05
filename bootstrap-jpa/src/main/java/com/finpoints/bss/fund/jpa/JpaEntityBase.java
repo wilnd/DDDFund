@@ -6,7 +6,7 @@ import lombok.Getter;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 @Getter
 @MappedSuperclass
@@ -21,24 +21,24 @@ public abstract class JpaEntityBase {
 
     @CreatedDate
     @Column(columnDefinition = "datetime(6) comment '创建时间'")
-    private LocalDateTime createdTime;
+    private Instant createdTime;
 
     @LastModifiedDate
     @Column(columnDefinition = "datetime(6) comment '修改时间'")
-    private LocalDateTime updatedTime;
+    private Instant updatedTime;
 
     @Column(columnDefinition = "boolean default false comment '逻辑删除标识'")
     private Boolean deleted = false;
 
     public void copyFrom(Entity entity) {
-        this.id = entity.delegateId();
+        this.id = entity.delegateId() == null ? null : Long.valueOf(entity.delegateId());
         this.appId = entity.getAppId();
         this.createdTime = entity.getCreatedTime();
         this.updatedTime = entity.getUpdatedTime();
     }
 
     public void copyTo(Entity entity) {
-        entity.setAppId(this.getId(), this.getAppId());
+        entity.setAppId(this.getId() == null ? null : String.valueOf(this.getId()), this.getAppId());
         entity.setTime(this.getCreatedTime(), this.getUpdatedTime());
     }
 }

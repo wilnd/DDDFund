@@ -4,6 +4,9 @@ import com.finpoints.bss.fund.domain.model.common.BankCardId;
 import com.finpoints.bss.fund.domain.model.common.BankId;
 import com.finpoints.bss.fund.domain.model.common.Currency;
 import com.finpoints.bss.fund.domain.model.common.UserId;
+import com.finpoints.bss.fund.domain.model.mt.MtRequestId;
+import com.finpoints.bss.fund.domain.model.mt.MtRequestRepository;
+import com.finpoints.bss.fund.domain.model.mt.MtServerId;
 import com.finpoints.bss.fund.domain.model.wallet.WalletId;
 import com.finpoints.bss.fund.domain.model.wallet.WalletType;
 import com.finpoints.bss.fund.domain.model.withdrawal.WithdrawalMethod;
@@ -13,15 +16,22 @@ import com.finpoints.bss.fund.domain.model.withdrawal.WithdrawalOrderNo;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 
 @Component
-public class WithdrawalToWireStrategy implements WithdrawalMethodStrategy {
+public class WithdrawalToWireStrategy extends MtWithdrawalStrategyDelegate {
+
+    public WithdrawalToWireStrategy(MtRequestRepository mtRequestRepository) {
+        super(mtRequestRepository);
+    }
 
     @Override
-    public WithdrawalOrder withdrawal(UserId userId, WalletId walletId, WalletType walletType,
-                                      WithdrawalMethod withdrawalMethod, BigDecimal amount,
-                                      Currency originalCurrency, String remark, BankId bankId, BankCardId bankCardId,
-                                      WithdrawalOrderNo withdrawalOrderNo, String mtAccount, String serverId) {
+    protected WithdrawalOrder doWithdrawal(WithdrawalOrderNo orderNo, UserId userId,
+                                           WalletId walletId, WalletType walletType,
+                                           Instant requestTime, String remark,
+                                           BigDecimal amount, Currency currency,
+                                           BankId bankId, BankCardId bankCardId,
+                                           MtRequestId mtRequestId) {
         return null;
     }
 }
