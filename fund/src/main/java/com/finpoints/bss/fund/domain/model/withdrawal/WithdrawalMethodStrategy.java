@@ -13,7 +13,7 @@ import java.time.Instant;
 
 public interface WithdrawalMethodStrategy {
 
-    WithdrawalOrder withdrawal(WithdrawalOrderNo orderNo, UserId userId,
+    WithdrawalOrder withdrawal(String appId, WithdrawalOrderNo orderNo, UserId userId,
                                WalletId walletId, WalletType walletType,
                                Instant requestTime, String remark,
                                BigDecimal amount, Currency currency,

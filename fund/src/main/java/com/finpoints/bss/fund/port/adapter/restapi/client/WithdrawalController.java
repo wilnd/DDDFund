@@ -4,7 +4,6 @@ import com.finpoints.bss.common.requester.CurrentRequesterService;
 import com.finpoints.bss.fund.application.withdrawal.ClientWithdrawalService;
 import com.finpoints.bss.fund.application.withdrawal.WithdrawalService;
 import com.finpoints.bss.fund.application.withdrawal.command.ApplyWithdrawalCommand;
-import com.finpoints.bss.fund.domain.model.common.UserId;
 import com.finpoints.bss.fund.domain.model.withdrawal.WithdrawalOrder;
 import com.finpoints.bss.fund.domain.model.withdrawal.WithdrawalOrderNo;
 import com.finpoints.bss.fund.port.adapter.restapi.client.dto.WithdrawalOrderDTO;
@@ -30,6 +29,7 @@ public class WithdrawalController {
     public String applyWithdrawal(@RequestBody ApplyWithdrawalRequest request) {
         WithdrawalOrderNo orderNo = withdrawalService.applyWithdrawal(
                 ApplyWithdrawalCommand.builder()
+                        .appId(requesterService.currentAppId())
                         .orderNo(request.getOrderNo())
                         .userId(requesterService.currentUserId())
                         .walletId(request.getWalletId())

@@ -6,11 +6,8 @@ import com.finpoints.bss.fund.domain.model.common.Currency;
 import com.finpoints.bss.fund.domain.model.common.UserId;
 import com.finpoints.bss.fund.domain.model.mt.MtRequestId;
 import com.finpoints.bss.fund.domain.model.mt.MtRequestRepository;
-import com.finpoints.bss.fund.domain.model.mt.MtServerId;
 import com.finpoints.bss.fund.domain.model.wallet.WalletId;
 import com.finpoints.bss.fund.domain.model.wallet.WalletType;
-import com.finpoints.bss.fund.domain.model.withdrawal.WithdrawalMethod;
-import com.finpoints.bss.fund.domain.model.withdrawal.WithdrawalMethodStrategy;
 import com.finpoints.bss.fund.domain.model.withdrawal.WithdrawalOrder;
 import com.finpoints.bss.fund.domain.model.withdrawal.WithdrawalOrderNo;
 import org.springframework.stereotype.Component;
@@ -26,7 +23,7 @@ public class WithdrawalToWireStrategy extends MtWithdrawalStrategyDelegate {
     }
 
     @Override
-    protected WithdrawalOrder doWithdrawal(WithdrawalOrderNo orderNo, UserId userId,
+    protected WithdrawalOrder doWithdrawal(String appId, WithdrawalOrderNo orderNo, UserId userId,
                                            WalletId walletId, WalletType walletType,
                                            Instant requestTime, String remark,
                                            BigDecimal amount, Currency currency,

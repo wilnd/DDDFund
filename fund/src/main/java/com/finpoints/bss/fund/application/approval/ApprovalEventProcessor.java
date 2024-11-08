@@ -45,6 +45,7 @@ public class ApprovalEventProcessor {
 
         // 创建风控审核单
         approvalOrder = new ApprovalOrder(
+                event.appId(),
                 new ApprovalOrderId(IdentityGenerator.nextIdentity()),
                 ApprovalType.Withdrawal, ApprovalRole.Risk,
                 event.getWithdrawalOrderNo().rawId());
@@ -94,6 +95,7 @@ public class ApprovalEventProcessor {
 
         // 创建财务审核单
         approvalOrder = new ApprovalOrder(
+                event.appId(),
                 new ApprovalOrderId(IdentityGenerator.nextIdentity()),
                 ApprovalType.Withdrawal, ApprovalRole.Finance,
                 event.getOrderNo());

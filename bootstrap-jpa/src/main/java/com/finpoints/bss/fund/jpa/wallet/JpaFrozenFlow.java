@@ -21,16 +21,16 @@ public class JpaFrozenFlow extends JpaEntityBase {
     @Column(length = 64, unique = true)
     private String flowId;
 
-    @Comment("幂等Key")
-    @Column(length = 128, unique = true)
-    private String idemKey;
-
     @Comment("钱包ID")
     @Column(length = 64)
     private String walletId;
 
     @Comment("用户ID")
     private String userId;
+
+    @Comment("关联业务订单号")
+    @Column(length = 128, unique = true)
+    private String businessOrderNo;
 
     @Embedded
     @Comment("币种")

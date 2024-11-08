@@ -7,6 +7,13 @@ public class AggregateRoot extends Entity {
 
     private final transient List<DomainEvent> domainEvents = new ArrayList<>();
 
+    protected AggregateRoot() {
+    }
+
+    protected AggregateRoot(String appId) {
+        super(appId);
+    }
+
     protected void registerEvent(DomainEvent event) {
         domainEvents.add(event);
     }

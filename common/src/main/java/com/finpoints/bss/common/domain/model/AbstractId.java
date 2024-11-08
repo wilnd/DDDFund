@@ -1,11 +1,12 @@
 package com.finpoints.bss.common.domain.model;
 
+import lombok.AccessLevel;
 import lombok.Getter;
 
 import java.io.Serializable;
 import java.util.Objects;
 
-@Getter
+@Getter(AccessLevel.NONE)
 public class AbstractId implements Identity, Serializable {
 
     private final String id;

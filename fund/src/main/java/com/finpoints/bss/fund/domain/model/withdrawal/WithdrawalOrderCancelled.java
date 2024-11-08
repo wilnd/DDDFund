@@ -19,11 +19,12 @@ public class WithdrawalOrderCancelled extends DomainEvent {
     private final BigDecimal amount;
     private final WithdrawalOrderStatus status;
 
-    public WithdrawalOrderCancelled(WithdrawalOrderNo withdrawalOrderNo,
+    public WithdrawalOrderCancelled(String appId, WithdrawalOrderNo withdrawalOrderNo,
                                     WalletId walletId, WalletType walletType,
                                     WithdrawalMethod withdrawalMethod,
                                     BigDecimal exchangeRate, BigDecimal amount,
                                     WithdrawalOrderStatus status) {
+        super(appId);
         this.withdrawalOrderNo = withdrawalOrderNo;
         this.walletId = walletId;
         this.walletType = walletType;

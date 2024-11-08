@@ -5,11 +5,13 @@ import com.finpoints.bss.common.domain.model.CrudRepository;
 public interface FrozenFlowRepository extends CrudRepository<FrozenFlow, FrozenFlowId> {
 
     /**
-     * 幂等key获取冻结交易
+     * 通过业务订单号获取冻结交易
      *
-     * @param idemKey 幂等key
+     * @param walletId   钱包ID
+     * @param freezeType 冻结类型
+     * @param orderNo    业务订单号
      * @return 冻结交易
      */
-    FrozenFlow findByIdemKey(String idemKey);
+    FrozenFlow orderFlow(WalletId walletId, FrozenType freezeType, String orderNo);
 
 }

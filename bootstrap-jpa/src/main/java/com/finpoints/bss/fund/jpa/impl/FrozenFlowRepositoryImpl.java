@@ -2,10 +2,7 @@ package com.finpoints.bss.fund.jpa.impl;
 
 import com.finpoints.bss.common.domain.model.IdentityGenerator;
 import com.finpoints.bss.fund.domain.model.common.UserId;
-import com.finpoints.bss.fund.domain.model.wallet.FrozenFlow;
-import com.finpoints.bss.fund.domain.model.wallet.FrozenFlowId;
-import com.finpoints.bss.fund.domain.model.wallet.FrozenFlowRepository;
-import com.finpoints.bss.fund.domain.model.wallet.WalletId;
+import com.finpoints.bss.fund.domain.model.wallet.*;
 import com.finpoints.bss.fund.jpa.CrudRepositoryImpl;
 import com.finpoints.bss.fund.jpa.JpaEntityConverter;
 import com.finpoints.bss.fund.jpa.wallet.JpaFrozenFlow;
@@ -40,9 +37,10 @@ public class FrozenFlowRepositoryImpl extends CrudRepositoryImpl<FrozenFlow, Fro
     }
 
     @Override
-    public FrozenFlow findByIdemKey(String idemKey) {
-        JpaFrozenFlow transaction = jpaFrozenFlowRepository.findByIdemKey(idemKey);
-        return convertToDomain(transaction);
+    public FrozenFlow orderFlow(WalletId walletId, FrozenType freezeType, String orderNo) {
+        JpaFrozenFlow frozenFlow = jpaFrozenFlowRepository.findByWalletIdAndFreezeTypeAndBusinessOrderNo(
+                walletId.rawId(), freezeType, orderNo);
+        return convertToDomain(frozenFlow);
     }
 
     public static class FrozenTransactionEntityConverter implements JpaEntityConverter<FrozenFlow, JpaFrozenFlow> {
@@ -54,9 +52,9 @@ public class FrozenFlowRepositoryImpl extends CrudRepositoryImpl<FrozenFlow, Fro
             }
             return new FrozenFlow(
                     new FrozenFlowId(persistenceEntity.getFlowId()),
-                    persistenceEntity.getIdemKey(),
                     new WalletId(persistenceEntity.getWalletId()),
                     new UserId(persistenceEntity.getUserId()),
+                    persistenceEntity.getBusinessOrderNo(),
                     persistenceEntity.getCurrency(),
                     persistenceEntity.getFreezeType(),
                     persistenceEntity.getAmount(),
@@ -73,9 +71,9 @@ public class FrozenFlowRepositoryImpl extends CrudRepositoryImpl<FrozenFlow, Fro
             }
             return new JpaFrozenFlow(
                     domainEntity.getFlowId().rawId(),
-                    domainEntity.getIdemKey(),
                     domainEntity.getWalletId().rawId(),
                     domainEntity.getUserId().rawId(),
+                    domainEntity.getBusinessOrderNo(),
                     domainEntity.getCurrency(),
                     domainEntity.getFreezeType(),
                     domainEntity.getAmount(),

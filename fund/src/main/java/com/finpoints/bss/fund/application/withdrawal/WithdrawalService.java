@@ -1,6 +1,7 @@
 package com.finpoints.bss.fund.application.withdrawal;
 
 import com.finpoints.bss.common.lock.LockTemplate;
+import com.finpoints.bss.common.requester.CurrentRequesterService;
 import com.finpoints.bss.fund.application.withdrawal.command.ApplyWithdrawalCommand;
 import com.finpoints.bss.fund.domain.model.common.BankCardId;
 import com.finpoints.bss.fund.domain.model.common.BankId;
@@ -57,7 +58,7 @@ public class WithdrawalService implements ClientWithdrawalService {
             // 检查出金订单是否已存在
             WithdrawalOrderNo orderNo = command.getOrderNo() == null ? null : new WithdrawalOrderNo(command.getOrderNo());
             if (orderNo != null && withdrawalOrderRepository.existsById(orderNo)) {
-                throw new RuntimeException("Withdrawal order already exists");
+                throw new IllegalArgumentException("Withdrawal order already exists");
             }
 
             // 出金策略
@@ -66,13 +67,14 @@ public class WithdrawalService implements ClientWithdrawalService {
 
             // 检查出金策略是否满足
             if (!walletStrategy.satisfied(walletId, command.getMtAccount(), command.getServerId(), command.getAmount())) {
-                throw new RuntimeException("Wallet withdrawal strategy not satisfied");
+                throw new IllegalArgumentException("Wallet withdrawal strategy not satisfied");
             }
             Currency originCurrency = walletStrategy.getCurrency(walletId, command.getMtAccount(), command.getServerId());
 
             // 开启事务，提交出金订单
             return transactionTemplate.execute(txStatus -> {
                 WithdrawalOrder withdrawalOrder = methodStrategy.withdrawal(
+                        command.getAppId(),
                         orderNo == null ? withdrawalOrderRepository.nextId() : orderNo,
                         userId, walletId, command.getWalletType(),
                         command.getRequestTime(),

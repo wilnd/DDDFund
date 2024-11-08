@@ -26,6 +26,6 @@ public interface ExternalEvent {
      * 事件内容转换器
      */
     default ExternalEventConverter converter() {
-        return new ComponentPathConverter();
+        return new ExternalEventConverter.DefaultExternalEventConverter();
     }
 }

@@ -5,4 +5,8 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface JpaWalletFlowRepository extends JpaRepository<JpaWalletFlow, Long> {
+
+    JpaWalletFlow findByFlowId(String flowId);
+
+    boolean existsByFlowId(String flowId);
 }

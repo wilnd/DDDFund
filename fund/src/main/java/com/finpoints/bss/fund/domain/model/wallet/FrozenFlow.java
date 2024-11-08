@@ -5,6 +5,7 @@ import com.finpoints.bss.fund.domain.model.common.Currency;
 import com.finpoints.bss.fund.domain.model.common.UserId;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import org.apache.commons.lang3.Validate;
 
 import java.math.BigDecimal;
 
@@ -18,11 +19,6 @@ public class FrozenFlow extends Entity {
     private final FrozenFlowId flowId;
 
     /**
-     * 幂等Key
-     */
-    private final String idemKey;
-
-    /**
      * 钱包ID
      */
     private final WalletId walletId;
@@ -31,6 +27,11 @@ public class FrozenFlow extends Entity {
      * 用户ID
      */
     private final UserId userId;
+
+    /**
+     * 关联业务订单号
+     */
+    private final String businessOrderNo;
 
     /**
      * 币种
@@ -62,10 +63,20 @@ public class FrozenFlow extends Entity {
      */
     private FrozenType unfreezeType;
 
-    public FrozenFlow(FrozenFlowId flowId, String idemKey, WalletId walletId, UserId userId, Currency currency,
-                      FrozenType freezeType, BigDecimal amount, String remark) {
+    public FrozenFlow(String appId, FrozenFlowId flowId, WalletId walletId, UserId userId, String businessOrderNo,
+                      Currency currency, FrozenType freezeType, BigDecimal amount, String remark) {
+        super(appId);
+
+        Validate.notNull(flowId, "flowId is null");
+        Validate.notNull(walletId, "walletId is null");
+        Validate.notNull(userId, "userId is null");
+        Validate.notNull(currency, "currency is null");
+        Validate.notNull(freezeType, "freezeType is null");
+        Validate.notNull(amount, "amount is null");
+        Validate.isTrue(amount.compareTo(BigDecimal.ZERO) > 0, "amount must be greater than 0");
+
         this.flowId = flowId;
-        this.idemKey = idemKey;
+        this.businessOrderNo = businessOrderNo;
         this.walletId = walletId;
         this.userId = userId;
         this.currency = currency;
@@ -78,5 +89,9 @@ public class FrozenFlow extends Entity {
         this.status = FrozenStatus.UNFROZEN;
         this.unfreezeType = unfreezeType;
         this.remark = remark;
+    }
+
+    public void completed() {
+        this.status = FrozenStatus.COMPLETED;
     }
 }

@@ -4,6 +4,7 @@ import com.finpoints.bss.common.lock.LockProvider;
 import com.finpoints.bss.common.lock.WLock;
 import com.finpoints.bss.fund.domain.model.wallet.*;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.Validate;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -42,16 +43,16 @@ public class WalletOperationServiceImpl implements WalletOperationService {
 
     @Override
     public FrozenFlowId freezeWalletAmount(WalletId walletId, FrozenType freezeType, BigDecimal amount,
-                                           String idemKey, String remark) {
+                                           String orderNo, String remark) {
         WLock lock = walletLockMap.get(walletId);
         if (lock == null || !lock.isHeldByCurrentThread()) {
-            throw new RuntimeException("Wallet lock is not found or not locked");
+            throw new RuntimeException("Wallet lock is not held by current thread");
         }
 
-        FrozenFlow transaction = frozenFlowRepository.findByIdemKey(idemKey);
-        if (transaction != null) {
-            log.warn("Frozen transaction is already exist, idemKey: {}", idemKey);
-            return transaction.getFlowId();
+        FrozenFlow flow = frozenFlowRepository.orderFlow(walletId, freezeType, orderNo);
+        if (flow != null) {
+            log.warn("Frozen flow {} is already exist, orderNo: {}", freezeType, orderNo);
+            return flow.getFlowId();
         }
 
         Wallet wallet = walletRepository.findById(walletId);
@@ -60,31 +61,31 @@ public class WalletOperationServiceImpl implements WalletOperationService {
         }
 
         // 冻结资金
-        transaction = wallet.freeze(frozenFlowRepository.nextId(), freezeType, amount, idemKey, remark);
-        frozenFlowRepository.save(transaction);
+        flow = wallet.freeze(frozenFlowRepository.nextId(), freezeType, amount, orderNo, remark);
+        frozenFlowRepository.save(flow);
         log.info("Freeze balance, walletId: {}, type: {}, amount: {}, frozenAmount: {}",
-                walletId, freezeType, amount, transaction.getAmount());
+                walletId, freezeType, amount, flow.getAmount());
 
         walletRepository.save(wallet);
-        return transaction.getFlowId();
+        return flow.getFlowId();
     }
 
     @Override
-    public void unfreezeWalletAmount(WalletId walletId, FrozenFlowId transactionId, FrozenType unfreezeType, BigDecimal amount,
-                                     String serviceCurrency, BigDecimal serviceCharge, String idemKey, String remark) {
+    public void unfreezeWalletAmount(WalletId walletId, FrozenFlowId flowId, FrozenType unfreezeType,
+                                     BigDecimal amount, BigDecimal serviceCharge, String remark) {
         WLock lock = walletLockMap.get(walletId);
         if (lock == null || !lock.isHeldByCurrentThread()) {
-            throw new RuntimeException("Wallet lock is not found or not locked");
+            throw new RuntimeException("Wallet lock is not held by current thread");
         }
 
-        FrozenFlow transaction = frozenFlowRepository.findById(transactionId);
-        if (transaction == null) {
-            log.error("Frozen transaction is not found, transactionId: {}", transactionId);
-            throw new RuntimeException("Frozen transaction is not found");
+        FrozenFlow flow = frozenFlowRepository.findById(flowId);
+        if (flow == null) {
+            log.error("Frozen flow is not found, flowId: {}", flowId);
+            throw new RuntimeException("Frozen flow is not found");
         }
-        if (transaction.getAmount().compareTo(amount) != 0) {
-            log.error("Unfreeze amount is not equal to frozen amount, transactionId: {}, amount: {}, frozenAmount: {}",
-                    transactionId, amount, transaction.getAmount());
+        if (flow.getAmount().compareTo(amount) != 0) {
+            log.error("Unfreeze amount is not equal to frozen amount, flowId: {}, amount: {}, frozenAmount: {}",
+                    flowId, amount, flow.getAmount());
             throw new RuntimeException("Unfreeze amount is not equal to frozen amount");
         }
 
@@ -94,37 +95,107 @@ public class WalletOperationServiceImpl implements WalletOperationService {
         }
 
         // 解冻资金
-        transaction = wallet.unfreeze(unfreezeType, transaction, remark);
-        frozenFlowRepository.save(transaction);
+        flow = wallet.unfreeze(unfreezeType, flow, remark);
+        frozenFlowRepository.save(flow);
+
         log.info("Unfreeze balance, walletId: {}, type: {}, amount: {}, unfrozenAmount: {}",
-                walletId, unfreezeType, amount, transaction.getAmount());
+                walletId, unfreezeType, amount, flow.getAmount());
 
         // 扣除手续费
         if (serviceCharge != null && serviceCharge.compareTo(BigDecimal.ZERO) > 0) {
-            WalletFlow serviceChargeTransaction = wallet.deduct(serviceCharge);
-            log.info("Deduct service charge, walletId: {}, serviceCharge: {}, serviceCurrency: {}",
-                    walletId, serviceCharge, serviceCurrency);
-            walletFlowRepository.save(serviceChargeTransaction);
+            WalletFlowId walletFlowId = walletFlowRepository.nextId();
+            WalletFlow serviceChargeFlow = wallet.deduct(walletFlowId,
+                    WalletFlowType.from(unfreezeType),
+                    serviceCharge,
+                    flow.getBusinessOrderNo(),
+                    remark
+            );
+            log.info("Deduct service charge, walletId: {}, serviceCharge: {}",
+                    walletId, serviceCharge);
+            walletFlowRepository.save(serviceChargeFlow);
         }
 
         walletRepository.save(wallet);
     }
 
     @Override
-    public void addWalletFreezeAmount(WalletId walletId, BigDecimal amount, String idemKey) {
+    public WalletFlowId deductFrozenAmount(WalletId walletId, FrozenFlowId flowId, BigDecimal amount, String remark) {
+
         WLock lock = walletLockMap.get(walletId);
         if (lock == null || !lock.isHeldByCurrentThread()) {
-            throw new RuntimeException("Wallet lock is not found or not locked");
+            throw new RuntimeException("Wallet lock is not held by current thread");
         }
 
+        FrozenFlow frozenFlow = frozenFlowRepository.findById(flowId);
+        if (frozenFlow == null) {
+            log.error("Frozen flow is not found, flowId: {}", flowId);
+            throw new RuntimeException("Frozen flow is not found");
+        }
+        if (frozenFlow.getAmount().compareTo(amount) != 0) {
+            log.error("Deduct amount is not equal to frozen amount, flowId: {}, amount: {}, frozenAmount: {}",
+                    flowId, amount, frozenFlow.getAmount());
+            throw new RuntimeException("Deduct amount is not equal to frozen amount");
+        }
+
+        Wallet wallet = walletRepository.findById(walletId);
+        if (wallet == null) {
+            throw new RuntimeException("Wallet is not found");
+        }
+
+        // 扣除冻结资金
+        WalletFlow walletFlow = wallet.deductFrozen(walletFlowRepository.nextId(), frozenFlow, remark);
+        walletFlowRepository.save(walletFlow);
+        // 完成冻结流水
+        frozenFlow.completed();
+        frozenFlowRepository.save(frozenFlow);
+
+        log.info("Deduct frozen balance, walletId: {}, amount: {}, frozenAmount: {}",
+                walletId, amount, frozenFlow.getAmount());
+
+        walletRepository.save(wallet);
+        return walletFlow.getFlowId();
     }
 
     @Override
-    public void deductWalletFreezeAmount(WalletId walletId, BigDecimal amount, String idemKey) {
+    public WalletFlowId increaseFrozenAmount(WalletId walletId, FrozenType freezeType, BigDecimal amount,
+                                             String orderNo, String remark) {
+        Validate.notNull(orderNo, "OrderNo is required");
+
         WLock lock = walletLockMap.get(walletId);
         if (lock == null || !lock.isHeldByCurrentThread()) {
-            throw new RuntimeException("Wallet lock is not found or not locked");
+            throw new RuntimeException("Wallet lock is not held by current thread");
+        }
+        FrozenFlow frozenFlow = frozenFlowRepository.orderFlow(walletId, freezeType, orderNo);
+        if (frozenFlow != null) {
+            log.warn("Frozen flow {} is already exist, orderNo: {}", freezeType, orderNo);
+            return null;
         }
 
+        Wallet wallet = walletRepository.findById(walletId);
+        if (wallet == null) {
+            throw new RuntimeException("Wallet is not found");
+        }
+
+        // 创建冻结流水
+        frozenFlow = new FrozenFlow(
+                wallet.getAppId(),
+                frozenFlowRepository.nextId(),
+                wallet.getWalletId(),
+                wallet.getUserId(),
+                orderNo,
+                wallet.getCurrency(),
+                freezeType,
+                amount,
+                remark
+        );
+        // 增加冻结资金
+        WalletFlow walletFlow = wallet.increaseFrozen(walletFlowRepository.nextId(), frozenFlow, remark);
+        walletFlowRepository.save(walletFlow);
+        frozenFlowRepository.save(frozenFlow);
+        log.info("Increase frozen balance, walletId: {}, type: {}, amount: {}, frozenAmount: {}",
+                walletId, freezeType, amount, frozenFlow.getAmount());
+
+        walletRepository.save(wallet);
+        return walletFlow.getFlowId();
     }
 }

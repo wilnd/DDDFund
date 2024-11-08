@@ -26,6 +26,7 @@ public class DomainEventProcessor {
     public void process(DomainEvent event) {
         String serializedEvent = (String) eventSerializer.serialize(event);
         EventRecord eventRecord = new EventRecord(
+                event.appId(),
                 eventRecordRepository.nextId(),
                 event.occurredOn(),
                 event.eventName(),

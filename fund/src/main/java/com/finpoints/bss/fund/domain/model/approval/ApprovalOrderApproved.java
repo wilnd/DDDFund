@@ -37,8 +37,9 @@ public class ApprovalOrderApproved extends DomainEvent {
      */
     private final String remark;
 
-    public ApprovalOrderApproved(ApprovalOrderId approvalOrderId, ApprovalType type, ApprovalRole role,
+    public ApprovalOrderApproved(String appId, ApprovalOrderId approvalOrderId, ApprovalType type, ApprovalRole role,
                                  String orderNo, ApprovalStatus status, String remark) {
+        super(appId);
         this.approvalOrderId = approvalOrderId;
         this.type = type;
         this.role = role;

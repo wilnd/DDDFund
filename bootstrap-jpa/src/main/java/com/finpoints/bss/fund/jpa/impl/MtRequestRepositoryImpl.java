@@ -1,14 +1,15 @@
 package com.finpoints.bss.fund.jpa.impl;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.finpoints.bss.common.domain.model.IdentityGenerator;
+import com.finpoints.bss.common.event.ComponentPathSerializer;
 import com.finpoints.bss.fund.domain.model.mt.*;
 import com.finpoints.bss.fund.domain.model.mt.command.MtWithdrawalCommand;
 import com.finpoints.bss.fund.jpa.CrudRepositoryImpl;
 import com.finpoints.bss.fund.jpa.JpaEntityConverter;
 import com.finpoints.bss.fund.jpa.mt.JpaMtRequest;
 import com.finpoints.bss.fund.jpa.mt.JpaMtRequestRepository;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -18,8 +19,8 @@ public class MtRequestRepositoryImpl extends CrudRepositoryImpl<MtRequest, MtReq
     private final JpaMtRequestRepository mtRequestRepository;
 
     public MtRequestRepositoryImpl(JpaMtRequestRepository mtRequestRepository,
-                                   ObjectMapper objectMapper) {
-        super(new MtRequestConverter(objectMapper), mtRequestRepository);
+                                   ComponentPathSerializer serializer) {
+        super(new MtRequestConverter(serializer), mtRequestRepository);
         this.mtRequestRepository = mtRequestRepository;
     }
 
@@ -41,31 +42,23 @@ public class MtRequestRepositoryImpl extends CrudRepositoryImpl<MtRequest, MtReq
 
     public static class MtRequestConverter implements JpaEntityConverter<MtRequest, JpaMtRequest> {
 
-        private final ObjectMapper objectMapper;
+        private final ComponentPathSerializer serializer;
 
-        public MtRequestConverter(ObjectMapper objectMapper) {
-            this.objectMapper = objectMapper;
+        public MtRequestConverter(ComponentPathSerializer serializer) {
+            this.serializer = serializer;
         }
 
         @Override
         public MtRequest toDomainEntity(JpaMtRequest persistenceEntity) {
 
-            MtWithdrawalCommand command = null;
+            MtRequestCommand command = null;
             JsonNode responseContent = null;
-            if (persistenceEntity.getCommand() != null) {
-                try {
-                    Class<? extends MtRequestCommand> requestType = resolveCommandType(persistenceEntity.getType());
-                    command = (MtWithdrawalCommand) objectMapper.readValue(persistenceEntity.getCommand(), requestType);
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
-                }
+            if (StringUtils.isNotBlank(persistenceEntity.getCommand())) {
+                Class<? extends MtRequestCommand> requestType = resolveCommandType(persistenceEntity.getType());
+                command = serializer.deserialize(persistenceEntity.getCommand(), requestType);
             }
-            if (persistenceEntity.getResponseContent() != null) {
-                try {
-                    responseContent = objectMapper.readTree(persistenceEntity.getResponseContent());
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
-                }
+            if (StringUtils.isNotBlank(persistenceEntity.getResponseContent())) {
+                responseContent = serializer.deserialize(persistenceEntity.getResponseContent(), JsonNode.class);
             }
 
             return new MtRequest(
@@ -88,18 +81,10 @@ public class MtRequestRepositoryImpl extends CrudRepositoryImpl<MtRequest, MtReq
             String responseContent = null;
 
             if (domainEntity.getCommand() != null) {
-                try {
-                    command = objectMapper.writeValueAsString(domainEntity.getCommand());
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
-                }
+                command = (String) serializer.serialize(domainEntity.getCommand());
             }
             if (domainEntity.getResponseContent() != null) {
-                try {
-                    responseContent = objectMapper.writeValueAsString(domainEntity.getResponseContent());
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
-                }
+                responseContent = (String) serializer.serialize(domainEntity.getResponseContent());
             }
 
             return new JpaMtRequest(

@@ -1,8 +1,6 @@
 package com.finpoints.bss.fund.mybatis.impl;
 
-import com.finpoints.bss.fund.domain.model.wallet.FrozenFlow;
-import com.finpoints.bss.fund.domain.model.wallet.FrozenFlowId;
-import com.finpoints.bss.fund.domain.model.wallet.FrozenFlowRepository;
+import com.finpoints.bss.fund.domain.model.wallet.*;
 import org.springframework.stereotype.Repository;
 
 import java.util.Collection;
@@ -47,8 +45,7 @@ public class FrozenFlowRepositoryImpl implements FrozenFlowRepository {
     }
 
     @Override
-    public FrozenFlow findByIdemKey(String idemKey) {
+    public FrozenFlow orderFlow(WalletId walletId, FrozenType freezeType, String orderNo) {
         return null;
     }
-
 }

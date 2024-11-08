@@ -12,6 +12,7 @@ import java.time.Instant;
 @Builder
 public class ApplyWithdrawalCommand {
 
+    private final String appId;
     private final String orderNo;
     private final String userId;
     private final String walletId;

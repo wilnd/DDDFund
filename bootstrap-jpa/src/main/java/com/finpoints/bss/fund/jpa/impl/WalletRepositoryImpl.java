@@ -54,6 +54,7 @@ public class WalletRepositoryImpl extends CrudRepositoryImpl<Wallet, WalletId, J
 
             return new Wallet(
                     new WalletId(persistenceEntity.getWalletId()),
+                    persistenceEntity.getUserRole(),
                     new UserId(persistenceEntity.getUserId()),
                     persistenceEntity.getCurrency(),
                     persistenceEntity.getType(),
@@ -73,6 +74,7 @@ public class WalletRepositoryImpl extends CrudRepositoryImpl<Wallet, WalletId, J
 
             return new JpaWallet(
                     domainEntity.getWalletId().rawId(),
+                    domainEntity.getUserRole(),
                     domainEntity.getUserId().rawId(),
                     domainEntity.getCurrency(),
                     domainEntity.getType(),

@@ -53,7 +53,9 @@ public class ApprovalOrder extends AggregateRoot {
      */
     private Operator operator;
 
-    public ApprovalOrder(ApprovalOrderId orderId, ApprovalType type, ApprovalRole role, String businessOrderNo) {
+    public ApprovalOrder(String appId, ApprovalOrderId orderId, ApprovalType type,
+                         ApprovalRole role, String businessOrderNo) {
+        super(appId);
         this.orderId = orderId;
         this.type = type;
         this.role = role;
@@ -62,6 +64,7 @@ public class ApprovalOrder extends AggregateRoot {
 
         DomainEventPublisher.instance()
                 .publish(new ApprovalOrderCreated(
+                        this.getAppId(),
                         this.orderId,
                         this.type,
                         this.role,
@@ -91,6 +94,7 @@ public class ApprovalOrder extends AggregateRoot {
         // 事件发布
         DomainEventPublisher.instance()
                 .publish(new ApprovalOrderApproved(
+                        this.getAppId(),
                         this.orderId,
                         this.type,
                         this.role,
@@ -121,6 +125,7 @@ public class ApprovalOrder extends AggregateRoot {
         // 事件发布
         DomainEventPublisher.instance()
                 .publish(new ApprovalOrderRejected(
+                        this.getAppId(),
                         this.orderId,
                         this.type,
                         this.role,

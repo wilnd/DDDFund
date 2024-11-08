@@ -22,10 +22,10 @@ public interface WalletOperationService {
      *
      * @param walletId 钱包ID
      * @param amount   冻结金额
-     * @param idemKey  幂等key，由业务决定
+     * @param orderNo  业务订单号
      */
     FrozenFlowId freezeWalletAmount(WalletId walletId, FrozenType freezeType,
-                                    BigDecimal amount, String idemKey, String remark);
+                                    BigDecimal amount, String orderNo, String remark);
 
 
     /**
@@ -34,41 +34,43 @@ public interface WalletOperationService {
      * @param walletId     钱包ID
      * @param unfreezeType 解冻类型
      * @param amount       解冻金额
-     * @param idemKey      幂等key，由业务决定
      */
-    default void unfreezeWalletAmount(WalletId walletId, FrozenFlowId transactionId, FrozenType unfreezeType,
-                                      BigDecimal amount, String idemKey, String remark) {
-        unfreezeWalletAmount(walletId, transactionId, unfreezeType, amount, null, BigDecimal.ZERO, idemKey, remark);
+    default void unfreezeWalletAmount(WalletId walletId, FrozenFlowId flowId, FrozenType unfreezeType,
+                                      BigDecimal amount, String remark) {
+        unfreezeWalletAmount(walletId, flowId, unfreezeType, amount, BigDecimal.ZERO, remark);
     }
 
     /**
      * 解冻钱包资金
      *
-     * @param walletId        钱包ID
-     * @param unfreezeType    解冻类型
-     * @param amount          解冻金额
-     * @param serviceCharge   服务费
-     * @param serviceCurrency 服务费币种
-     * @param idemKey         幂等key，由业务决定
+     * @param walletId      钱包ID
+     * @param unfreezeType  解冻类型
+     * @param amount        解冻金额
+     * @param serviceCharge 服务费
      */
-    void unfreezeWalletAmount(WalletId walletId, FrozenFlowId transactionId, FrozenType unfreezeType, BigDecimal amount,
-                              String serviceCurrency, BigDecimal serviceCharge, String idemKey, String remark);
+    void unfreezeWalletAmount(WalletId walletId, FrozenFlowId transactionId, FrozenType unfreezeType,
+                              BigDecimal amount, BigDecimal serviceCharge, String remark);
 
     /**
-     * 增加钱包冻结资金
+     * 扣除冻结资金
+     *
+     * @param walletId 钱包ID
+     * @param flowId   冻结流水ID
+     * @param amount   扣除金额
+     * @param remark   备注
+     * @return 流水ID
+     */
+    WalletFlowId deductFrozenAmount(WalletId walletId, FrozenFlowId flowId, BigDecimal amount, String remark);
+
+    /**
+     * 增加冻结资金
      *
      * @param walletId 钱包ID
      * @param amount   增加金额
-     * @param idemKey  幂等key，由业务决定
+     * @param remark   备注
+     * @return 流水ID
      */
-    void addWalletFreezeAmount(WalletId walletId, BigDecimal amount, String idemKey);
+    WalletFlowId increaseFrozenAmount(WalletId walletId, FrozenType freezeType, BigDecimal amount,
+                                      String orderNo, String remark);
 
-    /**
-     * 扣减冻结冻结资金
-     *
-     * @param walletId 钱包ID
-     * @param amount   扣减金额
-     * @param idemKey  幂等key，由业务决定
-     */
-    void deductWalletFreezeAmount(WalletId walletId, BigDecimal amount, String idemKey);
 }

@@ -6,7 +6,8 @@ import lombok.Getter;
 public enum FrozenStatus {
 
     FROZEN("冻结"),
-    UNFROZEN("解冻");
+    UNFROZEN("解冻"),
+    COMPLETED("完成");
 
     private final String desc;
 

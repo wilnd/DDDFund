@@ -14,8 +14,9 @@ public class ApprovalOrderRejected extends DomainEvent {
     private final ApprovalStatus status;
     private final String remark;
 
-    public ApprovalOrderRejected(ApprovalOrderId approvalOrderId, ApprovalType type, ApprovalRole role,
+    public ApprovalOrderRejected(String appId, ApprovalOrderId approvalOrderId, ApprovalType type, ApprovalRole role,
                                  String orderNo, ApprovalStatus status, String remark) {
+        super(appId);
         this.approvalOrderId = approvalOrderId;
         this.type = type;
         this.role = role;

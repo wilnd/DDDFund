@@ -3,11 +3,13 @@ package com.finpoints.bss.fund.domain.model.event;
 import com.finpoints.bss.common.domain.model.AggregateRoot;
 import com.finpoints.bss.common.domain.model.DomainEventModule;
 import com.finpoints.bss.common.domain.model.Operator;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
 
 @Getter
+@AllArgsConstructor
 public class EventRecord extends AggregateRoot {
 
     /**
@@ -45,8 +47,10 @@ public class EventRecord extends AggregateRoot {
      */
     private final Operator operator;
 
-    public EventRecord(EventRecordId eventId, LocalDateTime occurredOn, String eventName, String eventType,
+    public EventRecord(String appId, EventRecordId eventId, LocalDateTime occurredOn, String eventName, String eventType,
                        DomainEventModule module, String serializedEvent, Operator operator) {
+        super(appId);
+
         this.eventId = eventId;
         this.occurredOn = occurredOn;
         this.eventName = eventName;

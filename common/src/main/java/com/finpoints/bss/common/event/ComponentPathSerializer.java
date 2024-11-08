@@ -14,17 +14,20 @@ import java.lang.reflect.Modifier;
 import java.lang.reflect.Parameter;
 
 @Component
-public class ComponentPathEventSerializer implements EventSerializer {
+public class ComponentPathSerializer implements EventSerializer {
 
     private final ObjectMapper objectMapper;
 
-    public ComponentPathEventSerializer(ObjectMapper objectMapper) {
+    public ComponentPathSerializer(ObjectMapper objectMapper) {
         this.objectMapper = objectMapper;
     }
 
     @Override
     public Object serialize(Object event) {
         try {
+            if (event instanceof JsonNode) {
+                return objectMapper.writeValueAsString(event);
+            }
             ObjectNode root = serializeObject(objectMapper.createObjectNode(), "", event);
             return objectMapper.writeValueAsString(root);
         } catch (Exception e) {
@@ -39,6 +42,9 @@ public class ComponentPathEventSerializer implements EventSerializer {
             throw new IllegalArgumentException("Serialized object must be a string");
         }
         try {
+            if (JsonNode.class.isAssignableFrom(type)) {
+                return (T) objectMapper.readTree((String) serialized);
+            }
             JsonNode root = objectMapper.readTree((String) serialized);
             return (T) deserializeByConstructor(root, "", type);
         } catch (Exception e) {
@@ -52,7 +58,7 @@ public class ComponentPathEventSerializer implements EventSerializer {
             Parameter[] parameters = declaredConstructor.getParameters();
             if (parameters.length == 0) {
                 try {
-                    return deserializeByField(root, "", type);
+                    return deserializeByField(root, prefix, type);
                 } catch (Exception e) {
                     throw new RuntimeException(e);
                 }
@@ -97,7 +103,14 @@ public class ComponentPathEventSerializer implements EventSerializer {
         if (fieldNode == null) {
             return null;
         }
-        if (AbstractId.class.isAssignableFrom(type)) {
+
+        if (String.class.isAssignableFrom(type)) {
+            return fieldNode.asText();
+        } else if (Boolean.class.isAssignableFrom(type)) {
+            return fieldNode.asBoolean();
+        } else if (Enum.class.isAssignableFrom(type)) {
+            return Enum.valueOf((Class<Enum>) type, fieldNode.asText());
+        } else if (AbstractId.class.isAssignableFrom(type)) {
             Constructor<?> constructor = type.getConstructor(String.class);
             return constructor.newInstance(fieldNode.asText());
         } else if (ValueObject.class.isAssignableFrom(type)) {
@@ -122,8 +135,6 @@ public class ComponentPathEventSerializer implements EventSerializer {
 
             if (fieldData instanceof String str) {
                 root.put(prefix + declaredField.getName(), str);
-            } else if (fieldData instanceof Number num) {
-                root.put(prefix + declaredField.getName(), num.toString());
             } else if (fieldData instanceof Boolean bool) {
                 root.put(prefix + declaredField.getName(), bool);
             } else if (fieldData instanceof Enum<?> enumValue) {

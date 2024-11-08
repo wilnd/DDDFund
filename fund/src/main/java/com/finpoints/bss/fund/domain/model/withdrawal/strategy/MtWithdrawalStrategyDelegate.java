@@ -28,35 +28,36 @@ public abstract class MtWithdrawalStrategyDelegate implements WithdrawalMethodSt
     }
 
     @Override
-    public WithdrawalOrder withdrawal(WithdrawalOrderNo orderNo, UserId userId,
+    public WithdrawalOrder withdrawal(String appId, WithdrawalOrderNo orderNo, UserId userId,
                                       WalletId walletId, WalletType walletType,
                                       Instant requestTime, String remark,
                                       BigDecimal amount, Currency currency,
                                       BankId bankId, BankCardId bankCardId,
                                       MtServerId serverId, String mtAccount) {
         if (serverId == null) {
-            return doWithdrawal(orderNo, userId, walletId, walletType, requestTime, remark,
+            return doWithdrawal(appId, orderNo, userId, walletId, walletType, requestTime, remark,
                     amount, currency, bankId, bankCardId, null);
         }
 
         // 创建MT出金请求
         BigDecimal mtAmount = amount.setScale(2, RoundingMode.DOWN);
         MtRequest mtRequest = new MtRequest(
+                appId,
                 mtRequestRepository.nextId(),
                 serverId,
                 mtAccount,
                 new MtWithdrawalCommand(amount, "wbu withdrawal -" + mtAmount)
         );
         mtRequestRepository.save(mtRequest);
-        
-        return doWithdrawal(orderNo, userId, walletId, walletType, requestTime, remark,
+
+        return doWithdrawal(appId, orderNo, userId, walletId, walletType, requestTime, remark,
                 amount, currency, bankId, bankCardId, mtRequest.getRequestId());
     }
 
     /**
      * 执行出金
      */
-    protected abstract WithdrawalOrder doWithdrawal(WithdrawalOrderNo orderNo, UserId userId,
+    protected abstract WithdrawalOrder doWithdrawal(String appId, WithdrawalOrderNo orderNo, UserId userId,
                                                     WalletId walletId, WalletType walletType,
                                                     Instant requestTime, String remark,
                                                     BigDecimal amount, Currency currency,

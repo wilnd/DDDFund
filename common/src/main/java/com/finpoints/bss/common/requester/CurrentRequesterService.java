@@ -4,6 +4,10 @@ public interface CurrentRequesterService {
 
     Requester currentRequester();
 
+    default String currentAppId() {
+        return currentRequester().getAppId();
+    }
+    
     default String currentUserId() {
         return currentRequester().getUserId();
     }
@@ -15,4 +19,5 @@ public interface CurrentRequesterService {
     default String currentRequesterIp() {
         return currentRequester().getIp();
     }
+
 }

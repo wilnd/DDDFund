@@ -15,8 +15,9 @@ public class MtRequestCreated extends DomainEvent {
     private final MtRequestCommand command;
     private final MtRequestStatus status;
 
-    public MtRequestCreated(MtRequestId requestId, MtServerType serverType, MtServerId serverId,
+    public MtRequestCreated(String appId, MtRequestId requestId, MtServerType serverType, MtServerId serverId,
                             String account, MtRequestType type, MtRequestCommand command, MtRequestStatus status) {
+        super(appId);
         this.requestId = requestId;
         this.serverType = serverType;
         this.serverId = serverId;

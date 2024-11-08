@@ -54,7 +54,10 @@ public class MtRequest extends AggregateRoot {
      */
     private JsonNode responseContent;
 
-    public MtRequest(MtRequestId requestId, MtServerId serverId, String account, MtRequestCommand command) {
+    public MtRequest(String appId, MtRequestId requestId, MtServerId serverId,
+                     String account, MtRequestCommand command) {
+        super(appId);
+
         this.requestId = requestId;
         this.account = account;
         this.serverType = null;
@@ -64,6 +67,7 @@ public class MtRequest extends AggregateRoot {
         this.status = MtRequestStatus.Pending;
 
         this.registerEvent(new MtRequestCreated(
+                this.getAppId(),
                 this.requestId,
                 this.serverType,
                 this.serverId,

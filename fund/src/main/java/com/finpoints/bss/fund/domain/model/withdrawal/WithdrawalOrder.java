@@ -129,12 +129,13 @@ public class WithdrawalOrder extends AggregateRoot {
      */
     private Instant recallTime;
 
-    WithdrawalOrder(WithdrawalOrderNo orderNo, UserId userId, WalletId walletId, WalletType walletType,
+    WithdrawalOrder(String appId, WithdrawalOrderNo orderNo, UserId userId, WalletId walletId, WalletType walletType,
                     WithdrawalMethod withdrawalMethod, Instant requestTime, BigDecimal exchangeRate,
                     Currency originalCurrency, Currency targetCurrency, BigDecimal amount, BigDecimal arrivalAmount,
                     BigDecimal serviceCharge, String bankAccount, BankId bankId, BankInfo bankInfo,
                     BankId intermediaryBankId, String intermediaryBankAccount, BankInfo intermediaryBankInfo,
                     MtRequestId mtRequestId) {
+        super(appId);
         this.orderNo = orderNo;
         this.userId = userId;
         this.walletId = walletId;
@@ -165,14 +166,14 @@ public class WithdrawalOrder extends AggregateRoot {
     /**
      * 创建出金订单
      */
-    public static WithdrawalOrder ofBank(WithdrawalOrderNo orderNo, UserId userId,
+    public static WithdrawalOrder ofBank(String appId, WithdrawalOrderNo orderNo, UserId userId,
                                          WalletId walletId, WalletType walletType,
                                          Instant requestTime, BigDecimal exchangeRate,
                                          Currency originalCurrency, Currency targetCurrency,
                                          BigDecimal amount, BigDecimal arrivalAmount,
                                          BankId bankId, String bankAccount, BankInfo bankInfo,
                                          MtRequestId mtRequestId) {
-        return new WithdrawalOrder(orderNo, userId, walletId, walletType, WithdrawalMethod.Bank,
+        return new WithdrawalOrder(appId, orderNo, userId, walletId, walletType, WithdrawalMethod.Bank,
                 requestTime, exchangeRate, originalCurrency, targetCurrency, amount, arrivalAmount,
                 BigDecimal.ZERO, bankAccount, bankId, bankInfo,
                 null, null, null,
@@ -194,13 +195,14 @@ public class WithdrawalOrder extends AggregateRoot {
         this.frozenFlowId = walletOperationService.freezeWalletAmount(
                 this.getWalletId(),
                 FrozenType.Withdrawal, amount,
-                generateIdemKey("submitWithdrawal"),
+                this.orderNo.rawId(),
                 "");
         this.updateStatus(WithdrawalOrderStatus.PENDING);
 
         // 发布出金订单提交事件
         DomainEventPublisher.instance()
                 .publish(new WithdrawalOrderSubmitted(
+                        this.getAppId(),
                         orderNo, userId,
                         walletId, walletType,
                         withdrawalMethod,
@@ -221,13 +223,13 @@ public class WithdrawalOrder extends AggregateRoot {
         walletOperationService.unfreezeWalletAmount(
                 walletId, frozenFlowId,
                 FrozenType.WithdrawalCancel, amount,
-                generateIdemKey("cancelWithdrawal"),
                 "");
         this.updateStatus(status);
 
         // 发布出金订单取消事件
         DomainEventPublisher.instance()
                 .publish(new WithdrawalOrderCancelled(
+                        this.getAppId(),
                         orderNo,
                         walletId, walletType,
                         withdrawalMethod,

@@ -5,12 +5,18 @@ import java.time.LocalDateTime;
 
 public abstract class DomainEvent implements Serializable {
 
+    private final transient String appId;
     private final transient LocalDateTime occurredOn;
     private final transient Operator operator;
 
-    protected DomainEvent() {
+    protected DomainEvent(String appId) {
+        this.appId = appId;
         this.occurredOn = LocalDateTime.now();
         this.operator = Operator.current();
+    }
+
+    public String appId() {
+        return appId;
     }
 
     public LocalDateTime occurredOn() {

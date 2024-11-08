@@ -17,6 +17,8 @@ public class LockTemplate {
             if (locked) {
                 try {
                     return callable.call();
+                } catch (RuntimeException re) {
+                    throw re;
                 } catch (Exception e) {
                     throw new RuntimeException(e);
                 }

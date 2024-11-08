@@ -1,11 +1,13 @@
 package com.finpoints.bss.fund.domain.model.wallet;
 
 import com.finpoints.bss.common.domain.model.AggregateRoot;
-import com.finpoints.bss.common.domain.model.IdentityGenerator;
+import com.finpoints.bss.common.domain.model.Operator;
 import com.finpoints.bss.fund.domain.model.common.Currency;
 import com.finpoints.bss.fund.domain.model.common.UserId;
+import com.finpoints.bss.fund.domain.model.common.UserRole;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import org.apache.commons.lang3.Validate;
 
 import java.math.BigDecimal;
 
@@ -17,6 +19,11 @@ public class Wallet extends AggregateRoot {
      * 钱包ID
      */
     private final WalletId walletId;
+
+    /**
+     * 用户角色
+     */
+    private final UserRole userRole;
 
     /**
      * 用户ID
@@ -59,8 +66,12 @@ public class Wallet extends AggregateRoot {
     private BigDecimal drawableBalance;
 
 
-    public Wallet(WalletId walletId, UserId userId, Currency currency, WalletType type, Boolean mainWallet) {
+    public Wallet(String appId, WalletId walletId, UserRole userRole, UserId userId, Currency currency,
+                  WalletType type, Boolean mainWallet) {
+        super(appId);
+
         this.walletId = walletId;
+        this.userRole = userRole;
         this.userId = userId;
         this.currency = currency;
         this.type = type;
@@ -80,11 +91,11 @@ public class Wallet extends AggregateRoot {
      *
      * @param type    冻结类型
      * @param amount  冻结金额
-     * @param idemKey 幂等key
+     * @param orderNo 业务订单号
      * @param remark  备注
      * @return 冻结流水
      */
-    public FrozenFlow freeze(FrozenFlowId flowId, FrozenType type, BigDecimal amount, String idemKey, String remark) {
+    public FrozenFlow freeze(FrozenFlowId flowId, FrozenType type, BigDecimal amount, String orderNo, String remark) {
         if (amount == null || amount.compareTo(BigDecimal.ZERO) <= 0) {
             throw new IllegalArgumentException("Amount must be greater than 0");
         }
@@ -97,10 +108,11 @@ public class Wallet extends AggregateRoot {
         this.frozenBalance = frozenBalance.add(amount);
 
         return new FrozenFlow(
+                this.getAppId(),
                 flowId,
-                idemKey,
                 this.getWalletId(),
                 this.getUserId(),
+                orderNo,
                 this.getCurrency(),
                 type,
                 amount,
@@ -115,25 +127,29 @@ public class Wallet extends AggregateRoot {
      * 增加可用/可提金额
      * 如果存在服务费，余额/可用/可提扣除服务费
      *
-     * @param type        解冻类型
-     * @param transaction 冻结流水
-     * @param remark      备注
+     * @param type   解冻类型
+     * @param flow   冻结流水
+     * @param remark 备注
      * @return 冻结流水
      */
-    public FrozenFlow unfreeze(FrozenType type, FrozenFlow transaction, String remark) {
-        if (transaction == null || transaction.getAmount().compareTo(BigDecimal.ZERO) <= 0) {
+    public FrozenFlow unfreeze(FrozenType type, FrozenFlow flow, String remark) {
+        if (flow == null || flow.getAmount().compareTo(BigDecimal.ZERO) <= 0) {
             throw new IllegalArgumentException("Amount must be greater than 0");
         }
-        if (transaction.getAmount().compareTo(frozenBalance) > 0) {
+        if (flow.getAmount().compareTo(frozenBalance) > 0) {
             throw new IllegalArgumentException("Insufficient balance");
         }
+        if (flow.getStatus() != FrozenStatus.FROZEN) {
+            throw new IllegalArgumentException("The flow is not frozen");
+        }
 
-        this.frozenBalance = frozenBalance.subtract(transaction.getAmount());
-        this.drawableBalance = drawableBalance.add(transaction.getAmount());
-        this.availableBalance = availableBalance.add(transaction.getAmount());
+        this.frozenBalance = frozenBalance.subtract(flow.getAmount());
+        this.drawableBalance = drawableBalance.add(flow.getAmount());
+        this.availableBalance = availableBalance.add(flow.getAmount());
 
-        transaction.unfreeze(type, remark);
-        return transaction;
+        // 解冻流水
+        flow.unfreeze(type, remark);
+        return flow;
     }
 
     /**
@@ -142,19 +158,42 @@ public class Wallet extends AggregateRoot {
      * 增加冻结金额
      * 增加余额
      *
-     * @param amount 增加金额
+     * @param flowId     流水ID
+     * @param frozenFlow 冻结流水
+     * @param remark     备注
      * @return 增加后的冻结金额
      */
-    public FrozenFlow increaseFrozen(BigDecimal amount) {
-        if (amount == null || amount.compareTo(BigDecimal.ZERO) <= 0) {
+    public WalletFlow increaseFrozen(WalletFlowId flowId, FrozenFlow frozenFlow, String remark) {
+        Validate.notNull(flowId, "FlowId must not be null");
+        Validate.notNull(frozenFlow, "FrozenFlow must not be null");
+
+        if (frozenFlow.getAmount() == null || frozenFlow.getAmount().compareTo(BigDecimal.ZERO) <= 0) {
             throw new IllegalArgumentException("Amount must be greater than 0");
         }
+        if (frozenFlow.getStatus() != FrozenStatus.FROZEN) {
+            throw new IllegalArgumentException("The flow is not frozen");
+        }
 
-        this.frozenBalance = frozenBalance.add(amount);
-        this.balance = balance.add(amount);
+        BigDecimal originalBalance = this.getBalance();
+        this.frozenBalance = frozenBalance.add(frozenFlow.getAmount());
+        this.balance = balance.add(frozenFlow.getAmount());
 
-        // TODO: 冻结流水
-        return null;
+        return new WalletFlow(
+                this.getAppId(),
+                flowId,
+                this.getType(),
+                this.getWalletId(),
+                this.getUserRole(),
+                this.getUserId(),
+                WalletFlowType.from(frozenFlow.getFreezeType()),
+                frozenFlow.getBusinessOrderNo(),
+                this.getCurrency(),
+                originalBalance,
+                frozenFlow.getAmount(),
+                this.getBalance(),
+                remark,
+                Operator.current()
+        );
     }
 
     /**
@@ -163,22 +202,44 @@ public class Wallet extends AggregateRoot {
      * 扣除冻结金额
      * 扣除余额
      *
-     * @param amount 扣除金额
+     * @param flowId     流水ID
+     * @param frozenFlow 冻结流水
      * @return 扣除后的可用金额
      */
-    public FrozenFlow deductFrozen(BigDecimal amount) {
-        if (amount == null || amount.compareTo(BigDecimal.ZERO) <= 0) {
+    public WalletFlow deductFrozen(WalletFlowId flowId, FrozenFlow frozenFlow, String remark) {
+        Validate.notNull(flowId, "FlowId must not be null");
+        Validate.notNull(frozenFlow, "FrozenFlow must not be null");
+
+        if (frozenFlow.getAmount() == null || frozenFlow.getAmount().compareTo(BigDecimal.ZERO) <= 0) {
             throw new IllegalArgumentException("Amount must be greater than 0");
         }
-        if (amount.compareTo(frozenBalance) > 0) {
+        if (frozenFlow.getAmount().compareTo(frozenBalance) > 0) {
             throw new IllegalArgumentException("Insufficient balance");
         }
+        if (frozenFlow.getStatus() != FrozenStatus.FROZEN) {
+            throw new IllegalArgumentException("The flow is not frozen");
+        }
 
-        this.frozenBalance = frozenBalance.subtract(amount);
-        this.balance = balance.subtract(amount);
+        BigDecimal originalBalance = this.getBalance();
+        this.frozenBalance = frozenBalance.subtract(frozenFlow.getAmount());
+        this.balance = balance.subtract(frozenFlow.getAmount());
 
-        // TODO: 冻结流水
-        return null;
+        return new WalletFlow(
+                this.getAppId(),
+                flowId,
+                this.getType(),
+                this.getWalletId(),
+                this.getUserRole(),
+                this.getUserId(),
+                WalletFlowType.from(frozenFlow.getFreezeType()),
+                frozenFlow.getBusinessOrderNo(),
+                this.getCurrency(),
+                originalBalance,
+                frozenFlow.getAmount(),
+                this.getBalance(),
+                remark,
+                Operator.current()
+        );
     }
 
     /**
@@ -190,17 +251,37 @@ public class Wallet extends AggregateRoot {
      * @param amount 增加金额
      * @return 增加后的可用金额
      */
-    public WalletFlow increase(BigDecimal amount) {
-        if (amount == null || amount.compareTo(BigDecimal.ZERO) <= 0) {
+    public WalletFlow increase(WalletFlowId flowId, WalletFlowType flowType, BigDecimal amount,
+                               String orderNo, String remark) {
+        Validate.notNull(flowId, "FlowId must not be null");
+        Validate.notNull(flowType, "FlowType must not be null");
+        Validate.notNull(amount, "Amount must not be null");
+
+        if (amount.compareTo(BigDecimal.ZERO) <= 0) {
             throw new IllegalArgumentException("Amount must be greater than 0");
         }
 
+        BigDecimal originalBalance = this.getBalance();
         this.availableBalance = availableBalance.add(amount);
         this.drawableBalance = drawableBalance.add(amount);
         this.balance = balance.add(amount);
 
-        // TODO: 交易流水
-        return null;
+        return new WalletFlow(
+                this.getAppId(),
+                flowId,
+                this.getType(),
+                this.getWalletId(),
+                this.getUserRole(),
+                this.getUserId(),
+                flowType,
+                orderNo,
+                this.getCurrency(),
+                originalBalance,
+                amount,
+                this.getBalance(),
+                remark,
+                Operator.current()
+        );
     }
 
 
@@ -213,19 +294,39 @@ public class Wallet extends AggregateRoot {
      * @param amount 提现金额
      * @return 提现后的可用金额
      */
-    public WalletFlow deduct(BigDecimal amount) {
-        if (amount == null || amount.compareTo(BigDecimal.ZERO) <= 0) {
+    public WalletFlow deduct(WalletFlowId flowId, WalletFlowType flowType, BigDecimal amount,
+                             String orderNo, String remark) {
+        Validate.notNull(flowId, "FlowId must not be null");
+        Validate.notNull(flowType, "FlowType must not be null");
+        Validate.notNull(amount, "Amount must not be null");
+
+        if (amount.compareTo(BigDecimal.ZERO) <= 0) {
             throw new IllegalArgumentException("Amount must be greater than 0");
         }
         if (amount.compareTo(availableBalance) > 0) {
             throw new IllegalArgumentException("Insufficient balance");
         }
 
+        BigDecimal originalBalance = this.getBalance();
         this.availableBalance = availableBalance.subtract(amount);
         this.drawableBalance = drawableBalance.subtract(amount);
         this.balance = balance.subtract(amount);
 
-        // TODO: 交易流水
-        return null;
+        return new WalletFlow(
+                this.getAppId(),
+                flowId,
+                this.getType(),
+                this.getWalletId(),
+                this.getUserRole(),
+                this.getUserId(),
+                flowType,
+                orderNo,
+                this.getCurrency(),
+                originalBalance,
+                amount,
+                this.getBalance(),
+                remark,
+                Operator.current()
+        );
     }
 }

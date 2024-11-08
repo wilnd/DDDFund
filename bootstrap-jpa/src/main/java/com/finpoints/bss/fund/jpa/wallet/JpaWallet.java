@@ -1,6 +1,7 @@
 package com.finpoints.bss.fund.jpa.wallet;
 
 import com.finpoints.bss.fund.domain.model.common.Currency;
+import com.finpoints.bss.fund.domain.model.common.UserRole;
 import com.finpoints.bss.fund.domain.model.wallet.WalletType;
 import com.finpoints.bss.fund.jpa.JpaEntityBase;
 import jakarta.persistence.*;
@@ -19,6 +20,10 @@ public class JpaWallet extends JpaEntityBase {
     @Comment("钱包ID")
     @Column(length = 64, unique = true)
     private String walletId;
+
+    @Comment("用户角色")
+    @Enumerated(EnumType.STRING)
+    private UserRole userRole;
 
     @Comment("用户ID")
     @Column(length = 64)

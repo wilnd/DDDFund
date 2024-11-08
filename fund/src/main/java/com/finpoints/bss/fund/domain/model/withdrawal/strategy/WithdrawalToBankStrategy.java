@@ -18,6 +18,7 @@ public class WithdrawalToBankStrategy extends MtWithdrawalStrategyDelegate {
 
     private final BankInfoService bankInfoService;
     private final ExchangeRateService exchangeRateService;
+
     private final WithdrawalSettingsService withdrawalSettingsService;
 
     public WithdrawalToBankStrategy(MtRequestRepository mtRequestRepository,
@@ -31,7 +32,7 @@ public class WithdrawalToBankStrategy extends MtWithdrawalStrategyDelegate {
     }
 
     @Override
-    protected WithdrawalOrder doWithdrawal(WithdrawalOrderNo orderNo, UserId userId,
+    protected WithdrawalOrder doWithdrawal(String appId, WithdrawalOrderNo orderNo, UserId userId,
                                            WalletId walletId, WalletType walletType,
                                            Instant requestTime, String remark,
                                            BigDecimal amount, Currency currency,
@@ -49,6 +50,7 @@ public class WithdrawalToBankStrategy extends MtWithdrawalStrategyDelegate {
         BigDecimal targetAmount = exchangeRate.calculateSellAmount(amount);
 
         return WithdrawalOrder.ofBank(
+                appId,
                 orderNo,
                 userId,
                 walletId,
