@@ -2,10 +2,10 @@ package com.finpoints.bss.fund.domain.model.wallet;
 
 public enum FrozenType {
 
-    Withdrawal("出金"),
-    WithdrawalCancel("出金取消"),
+    WITHDRAWAL("出金"),
+    WITHDRAWAL_CANCEL("出金取消"),
     
-    Deposit("入金"),
+    DEPOSIT("入金"),
     ;
 
     private final String desc;

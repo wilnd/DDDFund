@@ -31,12 +31,12 @@ public class ApprovalOrderRepositoryImpl extends CrudRepositoryImpl<ApprovalOrde
     }
 
     @Override
-    public ApprovalOrder orderApproval(ApprovalType type, ApprovalRole role, String orderNo) {
+    public ApprovalOrder orderApproval(ApprovalBusinessType type, ApprovalRole role, String orderNo) {
         return null;
     }
 
     @Override
-    public List<ApprovalOrder> orderApprovals(ApprovalType type, String orderNo) {
+    public List<ApprovalOrder> orderApprovals(ApprovalBusinessType type, String orderNo) {
         return List.of();
     }
 

@@ -3,7 +3,7 @@ package com.finpoints.bss.fund.jpa.approval;
 import com.finpoints.bss.common.domain.model.Operator;
 import com.finpoints.bss.fund.domain.model.approval.ApprovalRole;
 import com.finpoints.bss.fund.domain.model.approval.ApprovalStatus;
-import com.finpoints.bss.fund.domain.model.approval.ApprovalType;
+import com.finpoints.bss.fund.domain.model.approval.ApprovalBusinessType;
 import com.finpoints.bss.fund.jpa.JpaVersionalEntityBase;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -22,13 +22,13 @@ public class JpaApprovalOrder extends JpaVersionalEntityBase {
     @Column(length = 64, unique = true)
     private String orderId;
 
-    @Comment("业务类型")
-    @Enumerated(EnumType.STRING)
-    private ApprovalType type;
-
     @Comment("审核角色")
     @Enumerated(EnumType.STRING)
     private ApprovalRole role;
+
+    @Comment("业务类型")
+    @Enumerated(EnumType.STRING)
+    private ApprovalBusinessType businessType;
 
     @Comment("业务单号")
     @Column(length = 64)
@@ -43,7 +43,7 @@ public class JpaApprovalOrder extends JpaVersionalEntityBase {
 
     @Comment("审核备注")
     private String remark;
-    
+
     @Embedded
     private Operator operator;
 

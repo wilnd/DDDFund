@@ -101,7 +101,7 @@ public class MtRequestRepositoryImpl extends CrudRepositoryImpl<MtRequest, MtReq
         }
 
         private Class<? extends MtRequestCommand> resolveCommandType(MtRequestType requestType) {
-            if (requestType == MtRequestType.Withdrawal) {
+            if (requestType == MtRequestType.WITHDRAWAL) {
                 return MtWithdrawalCommand.class;
             }
             return null;

@@ -5,7 +5,7 @@ import lombok.Getter;
 @Getter
 public enum MtRequestType {
 
-    Withdrawal("提现"),
+    WITHDRAWAL("提现"),
 
     ;
     private final String desc;

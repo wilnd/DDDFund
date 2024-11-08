@@ -25,15 +25,15 @@ public class MockInitialRunner implements CommandLineRunner {
         Wallet wallet = new Wallet(
                 "mock-app-1",
                 new WalletId("mock-wallet-1"),
-                UserRole.Client,
+                UserRole.CLIENT,
                 new UserId("mock-user-1"),
                 Currency.USD,
-                WalletType.Trading,
+                WalletType.TRADING,
                 true
         );
         WalletFlow flow = wallet.increase(
                 walletFlowRepository.nextId(),
-                WalletFlowType.Deposit,
+                WalletFlowType.DEPOSIT,
                 new BigDecimal("1000"),
                 "mock-deposit-order-1",
                 "mock deposit"

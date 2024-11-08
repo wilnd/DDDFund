@@ -21,6 +21,6 @@ public class MtWithdrawalCommand implements MtRequestCommand {
 
     @Override
     public MtRequestType requestType() {
-        return MtRequestType.Withdrawal;
+        return MtRequestType.WITHDRAWAL;
     }
 }

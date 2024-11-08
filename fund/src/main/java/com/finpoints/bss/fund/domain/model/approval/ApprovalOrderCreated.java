@@ -10,12 +10,7 @@ public class ApprovalOrderCreated extends DomainEvent {
     /**
      * 审核单ID
      */
-    private final ApprovalOrderId approvalOrderId;
-
-    /**
-     * 业务类型
-     */
-    private final ApprovalType type;
+    private final ApprovalOrderId orderId;
 
     /**
      * 审核角色
@@ -23,22 +18,28 @@ public class ApprovalOrderCreated extends DomainEvent {
     private final ApprovalRole role;
 
     /**
+     * 业务类型
+     */
+    private final ApprovalBusinessType businessType;
+
+    /**
      * 关联业务订单号
      */
-    private final String orderNo;
+    private final String businessOrderNo;
 
     /**
      * 审核状态
      */
     private final ApprovalStatus status;
 
-    public ApprovalOrderCreated(String appId, ApprovalOrderId approvalOrderId, ApprovalType type, ApprovalRole role,
-                                String orderNo, ApprovalStatus status) {
+    public ApprovalOrderCreated(String appId, ApprovalOrderId orderId, ApprovalRole role,
+                                ApprovalBusinessType businessType, String businessOrderNo,
+                                ApprovalStatus status) {
         super(appId);
-        this.approvalOrderId = approvalOrderId;
-        this.type = type;
+        this.orderId = orderId;
+        this.businessType = businessType;
         this.role = role;
-        this.orderNo = orderNo;
+        this.businessOrderNo = businessOrderNo;
         this.status = status;
     }
 

@@ -9,8 +9,8 @@ import lombok.Getter;
 @Getter
 public enum ApprovalRole {
 
-    Risk("", "风控"),
-    Finance("", "财务"),
+    RISK("", "风控"),
+    FINANCE("", "财务"),
     ;
 
     private final String role;

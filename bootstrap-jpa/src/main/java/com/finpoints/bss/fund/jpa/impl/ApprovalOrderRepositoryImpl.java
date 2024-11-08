@@ -38,13 +38,13 @@ public class ApprovalOrderRepositoryImpl extends CrudRepositoryImpl<ApprovalOrde
     }
 
     @Override
-    public ApprovalOrder orderApproval(ApprovalType type, ApprovalRole role, String orderNo) {
+    public ApprovalOrder orderApproval(ApprovalBusinessType type, ApprovalRole role, String orderNo) {
         JpaApprovalOrder approval = jpaApprovalOrderRepository.findByTypeAndRoleAndBusinessOrderNo(type, role, orderNo);
         return convertToDomain(approval);
     }
 
     @Override
-    public List<ApprovalOrder> orderApprovals(ApprovalType type, String orderNo) {
+    public List<ApprovalOrder> orderApprovals(ApprovalBusinessType type, String orderNo) {
         return jpaApprovalOrderRepository.findByTypeAndBusinessOrderNo(type, orderNo).stream()
                 .map(this::convertToDomain)
                 .toList();
@@ -59,8 +59,8 @@ public class ApprovalOrderRepositoryImpl extends CrudRepositoryImpl<ApprovalOrde
             }
             return new ApprovalOrder(
                     new ApprovalOrderId(persistenceEntity.getOrderId()),
-                    persistenceEntity.getType(),
                     persistenceEntity.getRole(),
+                    persistenceEntity.getBusinessType(),
                     persistenceEntity.getBusinessOrderNo(),
                     persistenceEntity.getStatus(),
                     persistenceEntity.getApprovalTime(),
@@ -76,8 +76,8 @@ public class ApprovalOrderRepositoryImpl extends CrudRepositoryImpl<ApprovalOrde
             }
             return new JpaApprovalOrder(
                     domainEntity.getOrderId().rawId(),
-                    domainEntity.getType(),
                     domainEntity.getRole(),
+                    domainEntity.getBusinessType(),
                     domainEntity.getBusinessOrderNo(),
                     domainEntity.getStatus(),
                     domainEntity.getApprovalTime(),

@@ -1,7 +1,7 @@
 package com.finpoints.bss.fund.domain.model.wallet;
 
 public enum WalletFlowType {
-    Deposit,
+    DEPOSIT,
     ;
 
     public static WalletFlowType from(FrozenType frozenType) {

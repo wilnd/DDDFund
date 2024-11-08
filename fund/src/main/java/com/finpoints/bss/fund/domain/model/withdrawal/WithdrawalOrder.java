@@ -173,7 +173,7 @@ public class WithdrawalOrder extends AggregateRoot {
                                          BigDecimal amount, BigDecimal arrivalAmount,
                                          BankId bankId, String bankAccount, BankInfo bankInfo,
                                          MtRequestId mtRequestId) {
-        return new WithdrawalOrder(appId, orderNo, userId, walletId, walletType, WithdrawalMethod.Bank,
+        return new WithdrawalOrder(appId, orderNo, userId, walletId, walletType, WithdrawalMethod.BANK,
                 requestTime, exchangeRate, originalCurrency, targetCurrency, amount, arrivalAmount,
                 BigDecimal.ZERO, bankAccount, bankId, bankInfo,
                 null, null, null,
@@ -194,10 +194,10 @@ public class WithdrawalOrder extends AggregateRoot {
         // 冻结出金金额
         this.frozenFlowId = walletOperationService.freezeWalletAmount(
                 this.getWalletId(),
-                FrozenType.Withdrawal, amount,
+                FrozenType.WITHDRAWAL, amount,
                 this.orderNo.rawId(),
                 "");
-        this.updateStatus(WithdrawalOrderStatus.PENDING);
+        this.updateStatus(WithdrawalOrderStatus.PENDING_APPROVAL);
 
         // 发布出金订单提交事件
         DomainEventPublisher.instance()
@@ -216,13 +216,13 @@ public class WithdrawalOrder extends AggregateRoot {
      * 取消出金订单
      */
     public void cancel(WithdrawalOrderStatus status, WalletOperationService walletOperationService) {
-        Validate.isTrue(this.status == WithdrawalOrderStatus.PENDING || this.status == WithdrawalOrderStatus.APPROVING,
+        Validate.isTrue(this.status == WithdrawalOrderStatus.PENDING_APPROVAL || this.status == WithdrawalOrderStatus.APPROVING,
                 "Expected status is PENDING or APPROVING");
 
         // 解冻出金金额
         walletOperationService.unfreezeWalletAmount(
                 walletId, frozenFlowId,
-                FrozenType.WithdrawalCancel, amount,
+                FrozenType.WITHDRAWAL_CANCEL, amount,
                 "");
         this.updateStatus(status);
 

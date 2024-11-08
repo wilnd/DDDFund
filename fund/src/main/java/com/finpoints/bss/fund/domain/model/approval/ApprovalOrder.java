@@ -19,14 +19,14 @@ public class ApprovalOrder extends AggregateRoot {
     private final ApprovalOrderId orderId;
 
     /**
-     * 业务类型
-     */
-    private final ApprovalType type;
-
-    /**
      * 审核角色
      */
     private final ApprovalRole role;
+
+    /**
+     * 业务类型
+     */
+    private final ApprovalBusinessType businessType;
 
     /**
      * 关联业务订单号
@@ -53,21 +53,21 @@ public class ApprovalOrder extends AggregateRoot {
      */
     private Operator operator;
 
-    public ApprovalOrder(String appId, ApprovalOrderId orderId, ApprovalType type,
+    public ApprovalOrder(String appId, ApprovalOrderId orderId, ApprovalBusinessType businessType,
                          ApprovalRole role, String businessOrderNo) {
         super(appId);
         this.orderId = orderId;
-        this.type = type;
+        this.businessType = businessType;
         this.role = role;
         this.businessOrderNo = businessOrderNo;
-        this.status = ApprovalStatus.Pending;
+        this.status = ApprovalStatus.PENDING;
 
         DomainEventPublisher.instance()
                 .publish(new ApprovalOrderCreated(
                         this.getAppId(),
                         this.orderId,
-                        this.type,
                         this.role,
+                        this.businessType,
                         this.businessOrderNo,
                         this.status
                 ));
@@ -79,7 +79,7 @@ public class ApprovalOrder extends AggregateRoot {
      * @param requesterService 当前请求者服务
      */
     public void approve(CurrentRequesterService requesterService, String remark) {
-        if (this.status != ApprovalStatus.Pending) {
+        if (this.status != ApprovalStatus.PENDING) {
             throw new IllegalStateException("Approval status is not pending");
         }
         if (!this.role.canOperate(requesterService.currentUserRole())) {
@@ -87,7 +87,7 @@ public class ApprovalOrder extends AggregateRoot {
         }
 
         this.remark = remark;
-        this.status = ApprovalStatus.Approved;
+        this.status = ApprovalStatus.PASSED;
         this.approvalTime = Instant.now();
         this.operator = Operator.current();
 
@@ -96,8 +96,8 @@ public class ApprovalOrder extends AggregateRoot {
                 .publish(new ApprovalOrderApproved(
                         this.getAppId(),
                         this.orderId,
-                        this.type,
                         this.role,
+                        this.businessType,
                         this.businessOrderNo,
                         this.status,
                         this.remark
@@ -110,7 +110,7 @@ public class ApprovalOrder extends AggregateRoot {
      * @param requesterService 当前请求者服务
      */
     public void reject(CurrentRequesterService requesterService, String remark) {
-        if (this.status != ApprovalStatus.Pending) {
+        if (this.status != ApprovalStatus.PENDING) {
             throw new IllegalStateException("Approval status is not pending");
         }
         if (!this.role.canOperate(requesterService.currentUserRole())) {
@@ -118,7 +118,7 @@ public class ApprovalOrder extends AggregateRoot {
         }
 
         this.remark = remark;
-        this.status = ApprovalStatus.Rejected;
+        this.status = ApprovalStatus.REJECTED;
         this.approvalTime = Instant.now();
         this.operator = Operator.current();
 
@@ -127,8 +127,8 @@ public class ApprovalOrder extends AggregateRoot {
                 .publish(new ApprovalOrderRejected(
                         this.getAppId(),
                         this.orderId,
-                        this.type,
                         this.role,
+                        this.businessType,
                         this.businessOrderNo,
                         this.status,
                         this.remark
@@ -139,18 +139,18 @@ public class ApprovalOrder extends AggregateRoot {
      * 是否可以撤销
      */
     public boolean canCancel() {
-        return this.status == ApprovalStatus.Pending;
+        return this.status == ApprovalStatus.PENDING;
     }
 
     /**
      * 审核撤销
      */
     public void cancel() {
-        if (this.status != ApprovalStatus.Pending) {
+        if (this.status != ApprovalStatus.PENDING) {
             throw new IllegalStateException("Approval status is not pending");
         }
 
-        this.status = ApprovalStatus.Cancelled;
+        this.status = ApprovalStatus.CANCELLED;
         this.operator = Operator.current();
     }
 }

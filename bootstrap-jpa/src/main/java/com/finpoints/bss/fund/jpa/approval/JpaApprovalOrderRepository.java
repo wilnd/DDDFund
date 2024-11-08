@@ -1,7 +1,7 @@
 package com.finpoints.bss.fund.jpa.approval;
 
 import com.finpoints.bss.fund.domain.model.approval.ApprovalRole;
-import com.finpoints.bss.fund.domain.model.approval.ApprovalType;
+import com.finpoints.bss.fund.domain.model.approval.ApprovalBusinessType;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -14,7 +14,7 @@ public interface JpaApprovalOrderRepository extends JpaRepository<JpaApprovalOrd
 
     JpaApprovalOrder findByOrderId(String approvalId);
 
-    JpaApprovalOrder findByTypeAndRoleAndBusinessOrderNo(ApprovalType type, ApprovalRole role, String businessOrderNo);
+    JpaApprovalOrder findByTypeAndRoleAndBusinessOrderNo(ApprovalBusinessType type, ApprovalRole role, String businessOrderNo);
     
-    List<JpaApprovalOrder> findByTypeAndBusinessOrderNo(ApprovalType type, String businessOrderNo);
+    List<JpaApprovalOrder> findByTypeAndBusinessOrderNo(ApprovalBusinessType type, String businessOrderNo);
 }

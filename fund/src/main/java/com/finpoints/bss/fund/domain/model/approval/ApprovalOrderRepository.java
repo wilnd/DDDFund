@@ -14,7 +14,7 @@ public interface ApprovalOrderRepository extends CrudRepository<ApprovalOrder, A
      * @param orderNo 订单号
      * @return 审核单
      */
-    ApprovalOrder orderApproval(ApprovalType type, ApprovalRole role, String orderNo);
+    ApprovalOrder orderApproval(ApprovalBusinessType type, ApprovalRole role, String orderNo);
 
     /**
      * 获取订单的所有审核单
@@ -23,5 +23,5 @@ public interface ApprovalOrderRepository extends CrudRepository<ApprovalOrder, A
      * @param orderNo 订单号
      * @return 审核单列表
      */
-    List<ApprovalOrder> orderApprovals(ApprovalType type, String orderNo);
+    List<ApprovalOrder> orderApprovals(ApprovalBusinessType type, String orderNo);
 }

@@ -3,7 +3,7 @@ package com.finpoints.bss.fund.port.adapter.restapi.admin.dto;
 import com.finpoints.bss.fund.domain.model.approval.ApprovalOrder;
 import com.finpoints.bss.fund.domain.model.approval.ApprovalRole;
 import com.finpoints.bss.fund.domain.model.approval.ApprovalStatus;
-import com.finpoints.bss.fund.domain.model.approval.ApprovalType;
+import com.finpoints.bss.fund.domain.model.approval.ApprovalBusinessType;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -16,7 +16,7 @@ public class ApprovalDTO {
     private final String approvalId;
 
     @Schema(description = "业务类型")
-    private final ApprovalType type;
+    private final ApprovalBusinessType type;
 
     @Schema(description = "审核角色")
     private final ApprovalRole role;
@@ -39,7 +39,7 @@ public class ApprovalDTO {
     public static ApprovalDTO from(ApprovalOrder approvalOrder) {
         return new ApprovalDTO(
                 approvalOrder.getOrderId().rawId(),
-                approvalOrder.getType(),
+                approvalOrder.getBusinessType(),
                 approvalOrder.getRole(),
                 approvalOrder.getBusinessOrderNo(),
                 approvalOrder.getStatus(),

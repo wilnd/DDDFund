@@ -37,12 +37,12 @@ public class WithdrawalEventProcessor {
     /**
      * 处理出金风控审批通过事件
      */
-    @ApplicationModuleListener(condition = "#event.type.name() == 'Withdrawal' and #event.role.name() == 'Risk'")
+    @ApplicationModuleListener(condition = "#event.businessType.name() == 'Withdrawal' and #event.role.name() == 'Risk'")
     public void processWithdrawalRiskApproved(ApprovalOrderApproved event) {
 
-        WithdrawalOrder order = withdrawalOrderRepository.findById(new WithdrawalOrderNo(event.getOrderNo()));
+        WithdrawalOrder order = withdrawalOrderRepository.findById(new WithdrawalOrderNo(event.getBusinessOrderNo()));
         if (order == null) {
-            log.warn("Withdrawal order not found: {}", event.getOrderNo());
+            log.warn("Withdrawal order not found: {}", event.getBusinessOrderNo());
             return;
         }
 
@@ -57,13 +57,13 @@ public class WithdrawalEventProcessor {
      * 处理出金风控/财务审批拒绝事件
      */
     @Async
-    @TransactionalEventListener(condition = "#event.type.name() == 'Withdrawal' and " +
+    @TransactionalEventListener(condition = "#event.businessType.name() == 'Withdrawal' and " +
             "(#event.role.name() == 'Risk' or #event.role.name() == 'Finance')")
     public void processWithdrawalRejected(ApprovalOrderRejected event) {
 
-        WithdrawalOrder order = withdrawalOrderRepository.findById(new WithdrawalOrderNo(event.getOrderNo()));
+        WithdrawalOrder order = withdrawalOrderRepository.findById(new WithdrawalOrderNo(event.getBusinessOrderNo()));
         if (order == null) {
-            log.warn("Withdrawal order not found: {}", event.getOrderNo());
+            log.warn("Withdrawal order not found: {}", event.getBusinessOrderNo());
             return;
         }
 

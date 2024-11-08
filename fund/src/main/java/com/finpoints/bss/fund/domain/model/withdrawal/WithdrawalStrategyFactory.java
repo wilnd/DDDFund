@@ -22,17 +22,17 @@ public class WithdrawalStrategyFactory {
     public WalletWithdrawalStrategy walletStrategy(WalletType walletType) {
         return switch (walletType) {
             case MT -> new MtWalletWithdrawalStrategy();
-            case Trading -> new TradingWalletWithdrawalStrategy();
+            case TRADING -> new TradingWalletWithdrawalStrategy();
             default -> throw new IllegalArgumentException("Unsupported wallet type: " + walletType);
         };
     }
 
     public WithdrawalMethodStrategy methodStrategy(WithdrawalMethod withdrawalMethod) {
         switch (withdrawalMethod) {
-            case Bank -> {
+            case BANK -> {
                 return withdrawalToBankStrategy;
             }
-            case Wire -> {
+            case WIRE -> {
                 return withdrawalToWireStrategy;
             }
             default -> throw new IllegalArgumentException("Unsupported withdrawal method: " + withdrawalMethod);

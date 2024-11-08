@@ -36,7 +36,7 @@ public class ApprovalEventProcessor {
     @ApplicationModuleListener
     public void processWithdrawalSubmitted(WithdrawalOrderSubmitted event) {
         // 幂等性检查
-        ApprovalOrder approvalOrder = approvalRepository.orderApproval(ApprovalType.Withdrawal, ApprovalRole.Risk,
+        ApprovalOrder approvalOrder = approvalRepository.orderApproval(ApprovalBusinessType.WITHDRAWAL, ApprovalRole.RISK,
                 event.getWithdrawalOrderNo().rawId());
         if (approvalOrder != null) {
             log.warn("Risk Approval already exists for withdrawal order {}", event.getWithdrawalOrderNo());
@@ -47,7 +47,7 @@ public class ApprovalEventProcessor {
         approvalOrder = new ApprovalOrder(
                 event.appId(),
                 new ApprovalOrderId(IdentityGenerator.nextIdentity()),
-                ApprovalType.Withdrawal, ApprovalRole.Risk,
+                ApprovalBusinessType.WITHDRAWAL, ApprovalRole.RISK,
                 event.getWithdrawalOrderNo().rawId());
         log.info("Risk Approval created for withdrawal order {}, approval {}",
                 event.getWithdrawalOrderNo(), approvalOrder.getOrderId());
@@ -68,7 +68,7 @@ public class ApprovalEventProcessor {
     @ApplicationModuleListener(condition = "#event.status.name() == 'CANCELLED'")
     public void processWithdrawalCancelled(WithdrawalOrderCancelled event) {
         // 取消此订单下所有可取消的审核单
-        List<ApprovalOrder> approvalOrders = approvalRepository.orderApprovals(ApprovalType.Withdrawal,
+        List<ApprovalOrder> approvalOrders = approvalRepository.orderApprovals(ApprovalBusinessType.WITHDRAWAL,
                 event.getWithdrawalOrderNo().rawId());
         approvalOrders.forEach(approvalOrder -> {
             if (approvalOrder.canCancel()) {
@@ -83,13 +83,13 @@ public class ApprovalEventProcessor {
     /**
      * 处理出金订单风控审核通过事件
      */
-    @ApplicationModuleListener(condition = "#event.type.name() == 'Withdrawal' and #event.role.name() == 'Risk'")
+    @ApplicationModuleListener(condition = "#event.businessType.name() == 'Withdrawal' and #event.role.name() == 'Risk'")
     public void processWithdrawalRiskApproved(ApprovalOrderApproved event) {
         // 幂等性检查
-        ApprovalOrder approvalOrder = approvalRepository.orderApproval(ApprovalType.Withdrawal, ApprovalRole.Finance,
-                event.getOrderNo());
+        ApprovalOrder approvalOrder = approvalRepository.orderApproval(ApprovalBusinessType.WITHDRAWAL, ApprovalRole.FINANCE,
+                event.getBusinessOrderNo());
         if (approvalOrder != null) {
-            log.warn("Finance Approval already exists for withdrawal order {}", event.getOrderNo());
+            log.warn("Finance Approval already exists for withdrawal order {}", event.getBusinessOrderNo());
             return;
         }
 
@@ -97,10 +97,10 @@ public class ApprovalEventProcessor {
         approvalOrder = new ApprovalOrder(
                 event.appId(),
                 new ApprovalOrderId(IdentityGenerator.nextIdentity()),
-                ApprovalType.Withdrawal, ApprovalRole.Finance,
-                event.getOrderNo());
+                ApprovalBusinessType.WITHDRAWAL, ApprovalRole.FINANCE,
+                event.getBusinessOrderNo());
         log.info("Finance Approval created for withdrawal order {}, approval {}",
-                event.getOrderNo(), approvalOrder.getOrderId());
+                event.getBusinessOrderNo(), approvalOrder.getOrderId());
 
         approvalRepository.save(approvalOrder);
     }

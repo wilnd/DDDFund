@@ -64,7 +64,7 @@ public class MtRequest extends AggregateRoot {
         this.serverId = serverId;
         this.type = command.requestType();
         this.command = command;
-        this.status = MtRequestStatus.Pending;
+        this.status = MtRequestStatus.PENDING;
 
         this.registerEvent(new MtRequestCreated(
                 this.getAppId(),

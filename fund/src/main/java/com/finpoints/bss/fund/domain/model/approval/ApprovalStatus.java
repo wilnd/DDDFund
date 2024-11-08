@@ -1,12 +1,19 @@
 package com.finpoints.bss.fund.domain.model.approval;
 
+import lombok.Getter;
+
+@Getter
 public enum ApprovalStatus {
 
-    Pending,
+    PENDING("Pending"),
+    PASSED("Passed"),
+    REJECTED("Rejected"),
+    CANCELLED("Cancelled"),
+    ;
 
-    Approved,
+    private final String desc;
 
-    Rejected,
-
-    Cancelled
+    ApprovalStatus(String desc) {
+        this.desc = desc;
+    }
 }
