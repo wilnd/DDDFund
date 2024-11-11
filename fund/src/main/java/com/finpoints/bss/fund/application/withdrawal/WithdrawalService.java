@@ -1,7 +1,6 @@
 package com.finpoints.bss.fund.application.withdrawal;
 
 import com.finpoints.bss.common.lock.LockTemplate;
-import com.finpoints.bss.common.requester.CurrentRequesterService;
 import com.finpoints.bss.fund.application.withdrawal.command.ApplyWithdrawalCommand;
 import com.finpoints.bss.fund.domain.model.common.BankCardId;
 import com.finpoints.bss.fund.domain.model.common.BankId;
@@ -111,7 +110,7 @@ public class WithdrawalService implements ClientWithdrawalService {
 
         WithdrawalOrder order = withdrawalOrderRepository.userWithdrawalOrder(userId, orderNo);
         if (order == null) {
-            throw new RuntimeException("Withdrawal order not found");
+            throw new IllegalArgumentException("Withdrawal order not found");
         }
 
         // 获取钱包锁

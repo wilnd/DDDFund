@@ -4,12 +4,15 @@ import com.finpoints.bss.common.domain.model.ValueObject;
 import lombok.Getter;
 
 import java.util.Objects;
+import java.util.Set;
 
 /**
  * 货币
  */
 @Getter
 public class Currency extends ValueObject {
+
+    private static final Set<String> CRYPTO_CURRENCIES = Set.of("BTC", "ETH", "USDT");
 
     public static final Currency CNY = new Currency("CNY");
     public static final Currency USD = new Currency("USD");
@@ -23,6 +26,19 @@ public class Currency extends ValueObject {
 
     protected Currency() {
         this.code = null;
+    }
+
+    public int precision() {
+        // 获取币种对应小数位
+        // getDps(currency: string) {
+        //   if (['USD', 'JPY', 'CNY', 'CAD', 'HKD', 'CHF', 'EUR', 'GBP', 'KRW'].includes(currency)) return 2;
+        //   if (['BTC', 'ETH', 'USDT'].includes(currency)) return 8;
+        //   return 2;
+        // },
+        if (CRYPTO_CURRENCIES.contains(code)) {
+            return 8;
+        }
+        return 2;
     }
 
     @Override

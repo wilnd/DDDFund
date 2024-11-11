@@ -11,7 +11,6 @@ import lombok.Data;
 
 import java.math.BigDecimal;
 import java.time.Instant;
-import java.time.LocalDateTime;
 
 @Data
 @AllArgsConstructor
@@ -45,6 +44,9 @@ public class WithdrawalOrderDTO {
     @Schema(description = "出金金额")
     private BigDecimal amount;
 
+    @Schema(description = "到账金额")
+    private BigDecimal arrivalAmount;
+
     @Schema(description = "订单状态")
     private WithdrawalOrderStatus status;
 
@@ -61,10 +63,11 @@ public class WithdrawalOrderDTO {
                 order.getWalletType(),
                 order.getWalletId().rawId(),
                 order.getWithdrawalMethod(),
-                order.getExchangeRate(),
-                order.getOriginalCurrency().getCode(),
-                order.getTargetCurrency().getCode(),
-                order.getAmount(),
+                order.getAmount().getRate(),
+                order.getAmount().getOriginalCcy().getCode(),
+                order.getAmount().getTargetCcy().getCode(),
+                order.getAmount().getAmount(),
+                order.getArrivalAmount(),
                 order.getStatus(),
                 order.getCreatedTime(),
                 order.getUpdatedTime()

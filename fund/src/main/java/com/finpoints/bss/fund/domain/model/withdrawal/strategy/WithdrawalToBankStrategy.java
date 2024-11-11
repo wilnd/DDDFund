@@ -47,7 +47,10 @@ public class WithdrawalToBankStrategy extends MtWithdrawalStrategyDelegate {
         if (exchangeRate == null) {
             throw new IllegalArgumentException("Exchange rate not found: " + currency + " -> " + targetCurrency);
         }
-        BigDecimal targetAmount = exchangeRate.calculateSellAmount(amount);
+
+        ExchangeableAmount exchangeableAmount = new ExchangeableAmount(
+                currency, targetCurrency, exchangeRate.getSellRate(), amount
+        );
 
         return WithdrawalOrder.ofBank(
                 appId,
@@ -56,11 +59,8 @@ public class WithdrawalToBankStrategy extends MtWithdrawalStrategyDelegate {
                 walletId,
                 walletType,
                 requestTime,
-                exchangeRate.getSellRate(),
-                currency,
-                targetCurrency,
-                amount,
-                targetAmount,
+                exchangeableAmount,
+                exchangeableAmount.exchange(),
                 bankId,
                 null,
                 null,

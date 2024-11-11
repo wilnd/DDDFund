@@ -6,6 +6,7 @@ import com.finpoints.bss.fund.domain.model.wallet.WalletType;
 import com.finpoints.bss.fund.domain.model.withdrawal.WithdrawalMethod;
 import com.finpoints.bss.fund.domain.model.withdrawal.WithdrawalOrderStatus;
 import com.finpoints.bss.fund.jpa.JpaVersionalEntityBase;
+import com.finpoints.bss.fund.jpa.common.JpaExchangeableAmount;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -43,31 +44,17 @@ public class JpaWithdrawalOrder extends JpaVersionalEntityBase {
     @Comment("请求时间")
     private Instant requestTime;
 
-    @Comment("汇率")
-    @Column(precision = 20, scale = 10)
-    private BigDecimal exchangeRate;
-
     @Embedded
-    @Comment("原始出金币种")
-    @AttributeOverride(name = "code", column = @Column(name = "originalCurrency", length = 8))
-    private Currency originalCurrency;
-
-    @Embedded
-    @Comment("目标出金币种")
-    @AttributeOverride(name = "code", column = @Column(name = "targetCurrency", length = 8))
-    private Currency targetCurrency;
-
     @Comment("出金金额")
-    @Column(precision = 20, scale = 10)
-    private BigDecimal amount;
+    private JpaExchangeableAmount amount;
 
     @Comment("到账金额")
     @Column(precision = 20, scale = 10)
     private BigDecimal arrivalAmount;
 
+    @Embedded
     @Comment("服务费")
-    @Column(precision = 20, scale = 10)
-    private BigDecimal serviceCharge;
+    private JpaExchangeableAmount serviceCharge;
 
     @Comment("(银行出金)银行ID")
     @Column(length = 64)

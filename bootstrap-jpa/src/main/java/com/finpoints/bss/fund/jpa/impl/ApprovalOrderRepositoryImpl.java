@@ -39,13 +39,13 @@ public class ApprovalOrderRepositoryImpl extends CrudRepositoryImpl<ApprovalOrde
 
     @Override
     public ApprovalOrder orderApproval(ApprovalBusinessType type, ApprovalRole role, String orderNo) {
-        JpaApprovalOrder approval = jpaApprovalOrderRepository.findByTypeAndRoleAndBusinessOrderNo(type, role, orderNo);
+        JpaApprovalOrder approval = jpaApprovalOrderRepository.findByRoleAndBusinessTypeAndBusinessOrderNo(role, type, orderNo);
         return convertToDomain(approval);
     }
 
     @Override
     public List<ApprovalOrder> orderApprovals(ApprovalBusinessType type, String orderNo) {
-        return jpaApprovalOrderRepository.findByTypeAndBusinessOrderNo(type, orderNo).stream()
+        return jpaApprovalOrderRepository.findByBusinessTypeAndBusinessOrderNo(type, orderNo).stream()
                 .map(this::convertToDomain)
                 .toList();
     }

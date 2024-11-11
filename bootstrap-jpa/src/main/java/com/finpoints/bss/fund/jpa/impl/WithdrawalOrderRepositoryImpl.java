@@ -11,6 +11,7 @@ import com.finpoints.bss.fund.domain.model.withdrawal.WithdrawalOrderNo;
 import com.finpoints.bss.fund.domain.model.withdrawal.WithdrawalOrderRepository;
 import com.finpoints.bss.fund.jpa.CrudRepositoryImpl;
 import com.finpoints.bss.fund.jpa.JpaEntityConverter;
+import com.finpoints.bss.fund.jpa.common.JpaExchangeableAmount;
 import com.finpoints.bss.fund.jpa.withdrawal.JpaWithdrawalOrder;
 import com.finpoints.bss.fund.jpa.withdrawal.JpaWithdrawalOrderRepository;
 import org.springframework.stereotype.Repository;
@@ -62,12 +63,9 @@ public class WithdrawalOrderRepositoryImpl extends CrudRepositoryImpl<Withdrawal
                     persistenceEntity.getWalletType(),
                     persistenceEntity.getWithdrawalMethod(),
                     persistenceEntity.getRequestTime(),
-                    persistenceEntity.getExchangeRate(),
-                    persistenceEntity.getOriginalCurrency(),
-                    persistenceEntity.getTargetCurrency(),
-                    persistenceEntity.getAmount(),
+                    persistenceEntity.getAmount().toExchangeableAmount(),
                     persistenceEntity.getArrivalAmount(),
-                    persistenceEntity.getServiceCharge(),
+                    persistenceEntity.getServiceCharge().toExchangeableAmount(),
                     persistenceEntity.getBankId() == null ? null : new BankId(persistenceEntity.getBankId()),
                     persistenceEntity.getBankAccount(),
                     persistenceEntity.getBankInfo(),
@@ -93,12 +91,9 @@ public class WithdrawalOrderRepositoryImpl extends CrudRepositoryImpl<Withdrawal
                     domainEntity.getWalletType(),
                     domainEntity.getWithdrawalMethod(),
                     domainEntity.getRequestTime(),
-                    domainEntity.getExchangeRate(),
-                    domainEntity.getOriginalCurrency(),
-                    domainEntity.getTargetCurrency(),
-                    domainEntity.getAmount(),
+                    JpaExchangeableAmount.from(domainEntity.getAmount()),
                     domainEntity.getArrivalAmount(),
-                    domainEntity.getServiceCharge(),
+                    JpaExchangeableAmount.from(domainEntity.getServiceCharge()),
                     domainEntity.getBankId() == null ? null : domainEntity.getBankId().rawId(),
                     domainEntity.getBankAccount(),
                     domainEntity.getBankInfo(),
